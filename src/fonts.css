@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "Namu";
+  src: url("./fonts/Namu-1850.ttf") format("truetype");
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Namu";
+  src: url("./fonts/Namu-1990.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
