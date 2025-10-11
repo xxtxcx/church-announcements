@@ -85,7 +85,7 @@ export default function ChurchAnnouncements() {
       }}
     >
       {/* Background */}
-      <div 
+      <div
         className="absolute inset-0 w-full h-full"
         style={{
           backgroundImage: `url(${background3})`,
@@ -96,16 +96,16 @@ export default function ChurchAnnouncements() {
       />
 
       {/* Верхня права смуга (хедер) */}
-      <div 
+      <div
         className="absolute ribbon-unfold-top"
         style={{
-          width: '16.67vw',
-          height: '0',
-          top: '-50vh',
-          right: '10px',
-          transform: 'rotate(-25deg)',
-          transformOrigin: 'center',
-          backgroundColor: '#741dff',
+          width: "16.67vw",
+          height: "0",
+          top: "-50vh",
+          right: "10px",
+          transform: "rotate(-25deg)",
+          transformOrigin: "center",
+          backgroundColor: "#741dff",
           opacity: 0
         }}
       />
@@ -120,14 +120,15 @@ export default function ChurchAnnouncements() {
               fontWeight: 600
             }}
           >
-            ОГОЛО <b />
+            ОГОЛО
+            <br className="sm:hidden" />
             ШЕННЯ
           </h1>
         </div>
 
         {/* Accordions */}
         <div className="space-y-3 sm:space-y-4 lg:space-y-5 xl:space-y-6">
-          <Accordion title="Домашні групи цього тижня">
+          <Accordion title="Домашні групи">
             <p className="mb-4">
               Інформація про домашні групи, які відбудуться цього тижня.
               Приєднуйтесь до спільноти, діліться життям і зростайте разом у
@@ -143,40 +144,46 @@ export default function ChurchAnnouncements() {
             </a>
           </Accordion>
 
-          <Accordion title="Молитва в Zoom">
-            <p className="mb-3">
-              У нас проходить спільна молитва в Zoom щопонеділка,
-              середи та п'ятниці.
-            </p>
-            <p className="mb-3 font-semibold">
-              Графік: понеділок, середа, п'ятниця
-            </p>
-            <a
-              href="https://us02web.zoom.us/j/89175725904?pwd=Ky9BYTZLV2pzVXc5b0VNQWl1UnhyZz09"
-              className="text-purple-300 hover:text-purple-700 break-all underline inline-block"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Приєднатися до Zoom
-            </a>
-            <p className="mt-3 text-sm text-gray-600">
-              Посилання також доступне в нашому чаті
-            </p>
-          </Accordion>
+          <Accordion title="Молитва">
+            <div className="space-y-4">
+              <div>
+                <p className="mb-2 font-semibold text-black-700">
+                  💬 Молитовний бот
+                </p>
+                <p className="mb-3">
+                  У нашому чаті працює молитовний бот, де ви можете залишити
+                  свою молитовну потребу. Спільнота буде молитися за вас!
+                </p>
+                <a
+                  href="https://t.me/dchurch_prayer_bot"
+                  className="text-purple-600 hover:text-purple-700 font-medium underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  @dchurch_prayer_bot
+                </a>
+              </div>
 
-          <Accordion title="Молитовний бот">
-            <p className="mb-4">
-              У нашому чаті працює молитовний бот, де ви можете залишити свою
-              молитовну потребу. Спільнота буде молитися за вас!
-            </p>
-            <a
-              href="https://t.me/dchurch_prayer_bot"
-              className="text-purple-600 hover:text-purple-700 font-medium underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @dchurch_prayer_bot
-            </a>
+              <div>
+                <p className="mb-2 font-semibold text-black-700">
+                  🙏 Молитва тут
+                </p>
+                <p>
+                  Це спеціальний час, коли біля сцени вас очікують служителі,
+                  готові разом помолитися за вас. Не обов'язково мати особливу
+                  потребу — ви можете підійти для молитви благословення на
+                  наступний тиждень.
+                </p>
+              </div>
+
+              <div>
+                <p className="mb-2 font-semibold text-black-700">
+                  ✨ Молодіжна молитва
+                </p>
+                <p className="mb-1">📅 Кожен останній вівторок місяця</p>
+                <p>📍 Великий зал</p>
+              </div>
+            </div>
           </Accordion>
 
           <Accordion title="Членство/Водне хрещення">
@@ -196,9 +203,10 @@ export default function ChurchAnnouncements() {
 
           <Accordion title="Служіння тут">
             <p className="mb-4">
-              Якщо ви член церкви, одна з ваших привілей — це можливість служити
-              Богу в нашій спільноті. За QR-кодом можна дізнатися більше про
-              актуальні служіння, залишити свої контакти та долучитися.
+              Якщо ви член церкви, один з ваших привілеїв — це можливість
+              служити Богу в нашій спільноті. За посиланням можна дізнатися
+              більше про актуальні служіння, залишити свої контакти та
+              долучитися.
             </p>
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSefJM3KrINTP-_dE8LPBtq_zdAQ9REVzLKu7rxrI3VVq3Te0A/viewform"
@@ -208,15 +216,6 @@ export default function ChurchAnnouncements() {
             >
               Форма для реєстрації служіння
             </a>
-          </Accordion>
-
-          <Accordion title="Молитва тут">
-            <p>
-              Що це таке? Це спеціальний час, коли біля сцени вас очікують
-              служителі, готові разом помолитися за вас. Не обов'язково мати
-              особливу потребу — ви можете підійти для молитви благословення на
-              наступний тиждень.
-            </p>
           </Accordion>
 
           <Accordion title="Церковна кав'ярня">
@@ -242,20 +241,34 @@ export default function ChurchAnnouncements() {
               @DYouth_NEWS
             </a>
           </Accordion>
+          <Accordion title="Наш Instagram">
+            <p className="mb-4">
+              Слідкуйте за нашими подіями, фото з заходів та натхненними постами
+              у нашому офіційному Instagram-акаунті!
+            </p>
+            <a
+              href="https://www.instagram.com/d.youth.lviv/"
+              className="text-purple-600 hover:text-purple-700 font-medium underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @d.youth.lviv
+            </a>
+          </Accordion>
         </div>
       </div>
 
       {/* Нижня ліва смуга (футер) */}
-      <div 
+      <div
         className="absolute ribbon-unfold-bottom"
         style={{
-          width: '16.67vw',
-          height: '0',
-          bottom: '-50vh',
-          left: '10px',
-          transform: 'rotate(-25deg)',
-          transformOrigin: 'center',
-          backgroundColor: '#741dff',
+          width: "16.67vw",
+          height: "0",
+          bottom: "-50vh",
+          left: "10px",
+          transform: "rotate(-25deg)",
+          transformOrigin: "center",
+          backgroundColor: "#741dff",
           opacity: 0
         }}
       />
