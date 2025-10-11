@@ -1,10 +1,28 @@
 import React, { useState } from "react";
 import background3 from "./assets/background3.jpg";
 import "./App.css";
-import instagramIcon from "./assets/instagram.png"; // або .svg
-import telegramIcon from "./assets/telegram.png"; // або .svg
-//import websiteIcon from "./assets/telegram.png"; // або .svg
-import logo from "./assets/logo.svg"; // або .svg
+import telegramIcon from "./assets/telegram.png";
+import logo from "./assets/logo.svg";
+
+const StarCircleIcon = ({ size = 20, className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 400 400"
+    width={size}
+    height={size}
+    className={className}
+  >
+    <circle cx="200" cy="200" r="180" fill="#202020" />
+
+    <g transform="translate(200, 200) rotate(7)">
+      <line x1="0" y1="0" x2="0" y2="-100" stroke="white" strokeWidth="45" />
+      <line x1="0" y1="0" x2="95" y2="-31" stroke="white" strokeWidth="45" />
+      <line x1="0" y1="0" x2="58" y2="81" stroke="white" strokeWidth="45" />
+      <line x1="0" y1="0" x2="-58" y2="81" stroke="white" strokeWidth="45" />
+      <line x1="0" y1="0" x2="-95" y2="-31" stroke="white" strokeWidth="45" />
+    </g>
+  </svg>
+);
 
 const InstagramIcon = ({ size = 48, color = "white", className = "" }) => (
   <svg
@@ -37,15 +55,15 @@ const InstagramIcon = ({ size = 48, color = "white", className = "" }) => (
   </svg>
 );
 
-const TriangleDown = ({ size = 24, color = "#000", className = "" }) => (
+const TriangleDown = ({ size = 24, className = "" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
-    <path d="M12 17 L4 7 L20 7 Z" fill={color} />
+    <path d="M12 17 L4 7 L20 7 Z" fill="#202020" />
   </svg>
 );
 
-const TriangleUp = ({ size = 24, color = "#000", className = "" }) => (
+const TriangleUp = ({ size = 24, className = "" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
-    <path d="M12 7 L4 17 L20 17 Z" fill={color} />
+    <path d="M12 7 L4 17 L20 17 Z" fill="#202020" />
   </svg>
 );
 
@@ -56,27 +74,15 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
     <div className="mb-2 relative">
       {/* Circle with star */}
       <div
-        className="absolute left-0 top-0 flex items-center justify-center z-10"
+        className="absolute left-0 top-0 z-10 transition-transform duration-500"
         style={{
-          width: "20px",
-          height: "20px",
-          borderRadius: "50%",
-          backgroundColor: "#0d0d0d",
-          transform: "translate(-50%, -50%)"
+          transform: `translate(-50%, -50%) ${
+            isOpen ? "rotate(35deg)" : "rotate(0deg)"
+          }`
         }}
       >
-        <span
-          className="text-white font-bold"
-          style={{
-            fontSize: "20px",
-            transform: "rotate(10deg) translateY(2px)",
-            lineHeight: "1"
-          }}
-        >
-          *
-        </span>
+        <StarCircleIcon size={20} />
       </div>
-
       <div className="w-full bg-white overflow-hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -264,17 +270,6 @@ export default function ChurchAnnouncements() {
               </span>
             )}
           </h1>
-          {/* <h1
-            className="text-7xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-white mb-4 tracking-tight leading-none"
-            style={{
-              fontFamily: "'Namu', 'Manrope', sans-serif",
-              fontWeight: 600
-            }}
-          >
-            ОГОЛО
-            <br className="sm:hidden" />
-            ШЕННЯ
-          </h1> */}
         </div>
 
         {/* Accordions */}
