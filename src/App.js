@@ -374,7 +374,7 @@ export default function ChurchAnnouncements() {
             <InstagramIcon
               size={48}
               color="white"
-              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16"
+              className="w-10 h-10 sm:w-10 sm:h-10 lg:w-10 lg:h-10"
             />
           </a>
 
@@ -387,7 +387,7 @@ export default function ChurchAnnouncements() {
             <img
               src={telegramIcon}
               alt="Telegram"
-              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16"
+              className="w-10 h-10 sm:w-10 sm:h-10 lg:w-10 lg:h-10"
             />
           </a>
 
