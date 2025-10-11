@@ -80,7 +80,7 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
 };
 
 export default function ChurchAnnouncements() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("uk");
 
   const translations = {
     uk: {
