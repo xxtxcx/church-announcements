@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import background3 from "./assets/background3.jpg";
 import "./App.css";
+import instagramIcon from "./assets/instagram.png"; // або .svg
+import telegramIcon from "./assets/telegram.png"; // або .svg
+import websiteIcon from "./assets/telegram.png"; // або .svg
 
 const TriangleDown = ({ size = 24, color = "#000", className = "" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
@@ -225,36 +228,47 @@ export default function ChurchAnnouncements() {
               провести час у теплій атмосфері спільноти.
             </p>
           </Accordion>
+        </div>
+        {/* Social Media Icons */}
+        <div className="mt-8 flex justify-center items-center gap-6 sm:gap-8 lg:gap-10">
+          <a
+            href="https://www.instagram.com/d.youth.lviv/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform hover:scale-110"
+          >
+            <img
+              src={instagramIcon}
+              alt="Instagram"
+              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16"
+            />
+          </a>
 
-          <Accordion title="Новини в Telegram">
-            <p className="mb-4">
-              Будьте в курсі всіх подій церкви! Підпішіться на наш
-              Telegram-канал, щоб отримувати актуальні новини, оголошення та
-              нагадування про заходи.
-            </p>
-            <a
-              href="https://t.me/DYouth_NEWS"
-              className="text-purple-600 hover:text-purple-700 font-medium underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @DYouth_NEWS
-            </a>
-          </Accordion>
-          <Accordion title="Наш Instagram">
-            <p className="mb-4">
-              Слідкуйте за нашими подіями, фото з заходів та натхненними постами
-              у нашому офіційному Instagram-акаунті!
-            </p>
-            <a
-              href="https://www.instagram.com/d.youth.lviv/"
-              className="text-purple-600 hover:text-purple-700 font-medium underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @d.youth.lviv
-            </a>
-          </Accordion>
+          <a
+            href="https://t.me/DYouth_NEWS"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform hover:scale-110"
+          >
+            <img
+              src={telegramIcon}
+              alt="Telegram"
+              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16"
+            />
+          </a>
+
+          <a
+            href="https://dchurch.lviv.ua/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-transform hover:scale-110"
+          >
+            <img
+              src="https://dchurch.lviv.ua/_next/image?url=%2Fstatic%2Flogo-header.webp&w=256&q=75"
+              alt="D.Church Website"
+              className="w-auto h-11 sm:h-14 lg:h-16 object-contain"
+            />
+          </a>
         </div>
       </div>
 
