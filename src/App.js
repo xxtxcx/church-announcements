@@ -178,7 +178,7 @@ export default function ChurchAnnouncements() {
 
               <div>
                 <p className="mb-2 font-semibold text-black-700">
-                  ✨ Молодіжна молитва
+                  ✨ Молитва молоді
                 </p>
                 <p className="mb-1">📅 Кожен останній вівторок місяця</p>
                 <p>📍 Великий зал</p>
