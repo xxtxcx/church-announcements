@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import background1 from "./assets/background2.jpg";
+import background3 from "./assets/background3.jpg";
+import "./App.css";
 
 const TriangleDown = ({ size = 24, color = "#000", className = "" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
@@ -41,34 +42,36 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
         </span>
       </div>
 
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white px-6 py-4 flex items-center justify-between text-left transition-all hover:bg-gray-50"
-        style={{ fontFamily: "'Namu', 'Manrope', sans-serif" }}
-      >
-        <span
-          className="font-semibold text-lg uppercase tracking-wide"
-          style={{ fontWeight: 600, color: "#731cfe" }}
+      <div className="w-full bg-white overflow-hidden">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full bg-white px-4 sm:px-6 py-3 sm:py-4 lg:py-5 flex items-center justify-between text-left transition-all hover:bg-gray-50"
+          style={{ fontFamily: "'Namu', 'Manrope', sans-serif" }}
         >
-          {title}
-        </span>
-        {isOpen ? (
-          <TriangleUp size={24} color="#000" className="flex-shrink-0" />
-        ) : (
-          <TriangleDown size={24} color="#000" className="flex-shrink-0" />
+          <span
+            className="font-semibold text-base sm:text-lg lg:text-xl uppercase tracking-wide"
+            style={{ fontWeight: 600, color: "#731cfe" }}
+          >
+            {title}
+          </span>
+          {isOpen ? (
+            <TriangleUp size={24} color="#000" className="flex-shrink-0" />
+          ) : (
+            <TriangleDown size={24} color="#000" className="flex-shrink-0" />
+          )}
+        </button>
+        {isOpen && (
+          <div
+            className="px-4 sm:px-6 pb-3 sm:pb-4 lg:pb-5 text-gray-700 leading-relaxed text-sm sm:text-base lg:text-lg"
+            style={{
+              fontFamily: "'Namu', 'Manrope', sans-serif",
+              fontWeight: 400
+            }}
+          >
+            {children}
+          </div>
         )}
-      </button>
-      {isOpen && (
-        <div
-          className="bg-white px-6 py-4 text-gray-700 leading-relaxed"
-          style={{
-            fontFamily: "'Namu', 'Manrope', sans-serif",
-            fontWeight: 400
-          }}
-        >
-          {children}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -78,18 +81,40 @@ export default function ChurchAnnouncements() {
     <div
       className="min-h-screen relative overflow-hidden"
       style={{
-        background: "#1a1a1a",
-        backgroundImage: `url(${background1})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed"
+        background: "#1a1a1a"
       }}
     >
-      <div className="relative z-10 container mx-auto px-12 py-8 md:py-12 max-w-4xl">
+      {/* Background */}
+      <div 
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: `url(${background3})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed"
+        }}
+      />
+
+      {/* Верхня права смуга (хедер) */}
+      <div 
+        className="absolute ribbon-unfold-top"
+        style={{
+          width: '16.67vw',
+          height: '0',
+          top: '-50vh',
+          right: '10px',
+          transform: 'rotate(-25deg)',
+          transformOrigin: 'center',
+          backgroundColor: '#741dff',
+          opacity: 0
+        }}
+      />
+
+      <div className="relative z-10 container mx-auto px-12 sm:px-12 lg:px-16 xl:px-20 py-8 md:py-12 max-w-4xl lg:max-w-5xl xl:max-w-6xl">
         {/* Header */}
         <div className="mb-10 px-3">
           <h1
-            className="text-7xl md:text-7xl lg:text-8xl font-bold text-white mb-4 tracking-tight leading-none"
+            className="text-7xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-white mb-4 tracking-tight leading-none"
             style={{
               fontFamily: "'Namu', 'Manrope', sans-serif",
               fontWeight: 600
@@ -101,7 +126,7 @@ export default function ChurchAnnouncements() {
         </div>
 
         {/* Accordions */}
-        <div className="space-y-5">
+        <div className="space-y-3 sm:space-y-4 lg:space-y-5 xl:space-y-6">
           <Accordion title="Домашні групи цього тижня">
             <p className="mb-4">
               Інформація про домашні групи, які відбудуться цього тижня.
@@ -120,7 +145,7 @@ export default function ChurchAnnouncements() {
 
           <Accordion title="Молитва в Zoom">
             <p className="mb-3">
-              Нагадуємо, що у нас проходить спільна молитва в Zoom щопонеділка,
+              У нас проходить спільна молитва в Zoom щопонеділка,
               середи та п'ятниці.
             </p>
             <p className="mb-3 font-semibold">
@@ -155,12 +180,18 @@ export default function ChurchAnnouncements() {
           </Accordion>
 
           <Accordion title="Членство/Водне хрещення">
-            <p>
+            <p className="mb-4">
               Якщо ви ще не є членом нашої церкви або не приймали водне хрещення
               у зрілому віці, заохочуємо зробити цей важливий крок. Запишіться
               за церковним номером телефону, і ми з радістю проведемо вас через
               цей процес.
             </p>
+            <a
+              href="tel:+380738003737"
+              className="text-purple-600 hover:text-purple-700 font-medium underline"
+            >
+              +380738003737
+            </a>
           </Accordion>
 
           <Accordion title="Служіння тут">
@@ -197,14 +228,37 @@ export default function ChurchAnnouncements() {
           </Accordion>
 
           <Accordion title="Новини в Telegram">
-            <p>
+            <p className="mb-4">
               Будьте в курсі всіх подій церкви! Підпішіться на наш
               Telegram-канал, щоб отримувати актуальні новини, оголошення та
               нагадування про заходи.
             </p>
+            <a
+              href="https://t.me/DYouth_NEWS"
+              className="text-purple-600 hover:text-purple-700 font-medium underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @DYouth_NEWS
+            </a>
           </Accordion>
         </div>
       </div>
+
+      {/* Нижня ліва смуга (футер) */}
+      <div 
+        className="absolute ribbon-unfold-bottom"
+        style={{
+          width: '16.67vw',
+          height: '0',
+          bottom: '-50vh',
+          left: '10px',
+          transform: 'rotate(-25deg)',
+          transformOrigin: 'center',
+          backgroundColor: '#741dff',
+          opacity: 0
+        }}
+      />
     </div>
   );
 }
