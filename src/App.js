@@ -3,7 +3,39 @@ import background3 from "./assets/background3.jpg";
 import "./App.css";
 import instagramIcon from "./assets/instagram.png"; // або .svg
 import telegramIcon from "./assets/telegram.png"; // або .svg
-import websiteIcon from "./assets/telegram.png"; // або .svg
+//import websiteIcon from "./assets/telegram.png"; // або .svg
+import logo from "./assets/logo.svg"; // або .svg
+
+const InstagramIcon = ({ size = 48, color = "white", className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 400 400"
+    width={size}
+    height={size}
+    className={className}
+  >
+    <rect
+      x="60"
+      y="45"
+      width="280"
+      height="280"
+      rx="70"
+      ry="70"
+      fill="none"
+      stroke={color}
+      strokeWidth="35"
+    />
+    <circle
+      cx="200"
+      cy="185"
+      r="70"
+      fill="none"
+      stroke={color}
+      strokeWidth="35"
+    />
+    <circle cx="287" cy="110" r="15" fill={color} />
+  </svg>
+);
 
 const TriangleDown = ({ size = 24, color = "#000", className = "" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
@@ -105,6 +137,11 @@ export default function ChurchAnnouncements() {
         title: "Членство/Водне хрещення",
         text: "Якщо ви ще не є членом нашої церкви або не приймали водне хрещення у зрілому віці, заохочуємо зробити цей важливий крок. Запишіться за церковним номером телефону, і ми з радістю проведемо вас через цей процес."
       },
+      donations: {
+        title: "Пожертви та десятини",
+        text: "Десятина та пожертви — це спосіб членів церкви підтримувати Боже діло. Гості та прихожани також можуть долучитися за бажанням, проте це абсолютно добровільно.",
+        button: "Пожертвувати"
+      },
       ministry: {
         title: "Служіння тут",
         text: "Якщо ви член церкви, один з ваших привілеїв — це можливість служити Богу в нашій спільноті. За посиланням можна дізнатися більше про актуальні служіння, залишити свої контакти та долучитися.",
@@ -136,6 +173,11 @@ export default function ChurchAnnouncements() {
       membership: {
         title: "Membership/Water Baptism",
         text: "If you are not yet a member of our church or have not been water baptized as an adult, we encourage you to take this important step. Sign up by calling the church number, and we will be happy to guide you through this process."
+      },
+      donations: {
+        title: "Donations & Tithes",
+        text: "Tithes and donations are how church members support God's work. Guests and visitors are also welcome to contribute if they wish, but it is completely voluntary.",
+        button: "Donate"
       },
       ministry: {
         title: "Ministry Here",
@@ -293,6 +335,18 @@ export default function ChurchAnnouncements() {
             </a>
           </Accordion>
 
+          <Accordion title={t.donations.title}>
+            <p className="mb-4">{t.donations.text}</p>
+            <a
+              href="https://dchurch.lviv.ua/donate"
+              className="text-purple-600 hover:text-purple-700 break-all underline inline-block"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t.donations.button}
+            </a>
+          </Accordion>
+
           <Accordion title={t.ministry.title}>
             <p className="mb-4">{t.ministry.text}</p>
             <a
@@ -317,9 +371,9 @@ export default function ChurchAnnouncements() {
             rel="noopener noreferrer"
             className="transition-transform hover:scale-110"
           >
-            <img
-              src={instagramIcon}
-              alt="Instagram"
+            <InstagramIcon
+              size={48}
+              color="white"
               className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16"
             />
           </a>
@@ -342,11 +396,12 @@ export default function ChurchAnnouncements() {
             target="_blank"
             rel="noopener noreferrer"
             className="transition-transform hover:scale-110"
+            style={{ filter: "brightness(0) invert(1)" }}
           >
             <img
-              src="https://dchurch.lviv.ua/_next/image?url=%2Fstatic%2Flogo-header.webp&w=256&q=75"
+              src={logo}
               alt="D.Church Website"
-              className="w-auto h-11 sm:h-14 lg:h-16 object-contain"
+              className="w-auto h-8 sm:h-8 lg:h-8"
             />
           </a>
         </div>
