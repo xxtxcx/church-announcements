@@ -80,6 +80,76 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
 };
 
 export default function ChurchAnnouncements() {
+  const [language, setLanguage] = useState("en");
+
+  const translations = {
+    uk: {
+      title: "ОГОЛОШЕННЯ",
+      homeGroups: {
+        title: "Домашні групи",
+        text: "Інформація про домашні групи, які відбудуться цього тижня. Приєднуйтесь до спільноти, діліться життям і зростайте разом у вірі!"
+      },
+      prayer: {
+        title: "Молитва",
+        bot: "💬 Молитовний бот",
+        botText:
+          "У нашому чаті працює молитовний бот, де ви можете залишити свою молитовну потребу. Спільнота буде молитися за вас!",
+        here: "🙏 Молитва тут",
+        hereText:
+          "Це спеціальний час, коли біля сцени вас очікують служителі, готові разом помолитися за вас. Не обов'язково мати особливу потребу — ви можете підійти для молитви благословення на наступний тиждень.",
+        youth: "✨ Молитва молоді",
+        schedule: "📅 Кожен останній вівторок місяця",
+        location: "📍 Великий зал"
+      },
+      membership: {
+        title: "Членство/Водне хрещення",
+        text: "Якщо ви ще не є членом нашої церкви або не приймали водне хрещення у зрілому віці, заохочуємо зробити цей важливий крок. Запишіться за церковним номером телефону, і ми з радістю проведемо вас через цей процес."
+      },
+      ministry: {
+        title: "Служіння тут",
+        text: "Якщо ви член церкви, один з ваших привілеїв — це можливість служити Богу в нашій спільноті. За посиланням можна дізнатися більше про актуальні служіння, залишити свої контакти та долучитися.",
+        link: "Форма для реєстрації служіння"
+      },
+      cafe: {
+        title: "Церковна кав'ярня",
+        text: "Після служіння запрошуємо вас до нашої церковної кав'ярні. Це чудова можливість поспілкуватися, познайомитися з новими людьми та провести час у теплій атмосфері спільноти."
+      }
+    },
+    en: {
+      title: "ANNOUNCEMENTS",
+      homeGroups: {
+        title: "Home Groups",
+        text: "Information about home groups happening this week. Join the community, share life and grow together in faith!"
+      },
+      prayer: {
+        title: "Prayer",
+        bot: "💬 Prayer Bot",
+        botText:
+          "Our chat has a prayer bot where you can leave your prayer request. The community will pray for you!",
+        here: "🙏 Prayer Here",
+        hereText:
+          "This is a special time when ministers are waiting by the stage, ready to pray with you. You don't have to have a special need — you can come for a blessing prayer for the next week.",
+        youth: "✨ Youth Prayer",
+        schedule: "📅 Every last Tuesday of the month",
+        location: "📍 Main Hall"
+      },
+      membership: {
+        title: "Membership/Water Baptism",
+        text: "If you are not yet a member of our church or have not been water baptized as an adult, we encourage you to take this important step. Sign up by calling the church number, and we will be happy to guide you through this process."
+      },
+      ministry: {
+        title: "Ministry Here",
+        text: "If you are a church member, one of your privileges is the opportunity to serve God in our community. Follow the link to learn more about current ministries, leave your contacts and get involved.",
+        link: "Ministry Registration Form"
+      },
+      cafe: {
+        title: "Church Cafe",
+        text: "After the service, we invite you to our church cafe. It's a great opportunity to chat, meet new people and spend time in the warm atmosphere of the community."
+      }
+    }
+  };
+
+  const t = translations[language];
   return (
     <div
       className="min-h-screen relative overflow-hidden"
@@ -114,6 +184,19 @@ export default function ChurchAnnouncements() {
       />
 
       <div className="relative z-10 container mx-auto px-12 sm:px-12 lg:px-16 xl:px-20 py-8 md:py-12 max-w-4xl lg:max-w-5xl xl:max-w-6xl">
+        <div className="absolute top-6 right-6 sm:top-8 sm:right-8 lg:top-10 lg:right-10 z-20">
+          <button
+            onClick={() => setLanguage(language === "uk" ? "en" : "uk")}
+            className="w-8 h-8 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all hover:scale-110 shadow-lg"
+          >
+            <span
+              className="text-white font-bold text-md sm:text-sm lg:text-base"
+              style={{ fontFamily: "'Namu', 'Manrope', sans-serif" }}
+            >
+              {language === "uk" ? "EN" : "UA"}
+            </span>
+          </button>
+        </div>
         {/* Header */}
         <div className="mb-10 px-3">
           <h1
@@ -123,20 +206,39 @@ export default function ChurchAnnouncements() {
               fontWeight: 600
             }}
           >
+            {language === "uk" ? (
+              <>
+                ОГОЛО
+                <br className="sm:hidden" />
+                ШЕННЯ
+              </>
+            ) : (
+              <span className="block text-6xl md:text-6xl lg:text-7xl xl:text-8xl">
+                AN
+                <br />
+                NOUNCE
+                <br />
+                MENTS
+              </span>
+            )}
+          </h1>
+          {/* <h1
+            className="text-7xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-white mb-4 tracking-tight leading-none"
+            style={{
+              fontFamily: "'Namu', 'Manrope', sans-serif",
+              fontWeight: 600
+            }}
+          >
             ОГОЛО
             <br className="sm:hidden" />
             ШЕННЯ
-          </h1>
+          </h1> */}
         </div>
 
         {/* Accordions */}
         <div className="space-y-3 sm:space-y-4 lg:space-y-5 xl:space-y-6">
-          <Accordion title="Домашні групи">
-            <p className="mb-4">
-              Інформація про домашні групи, які відбудуться цього тижня.
-              Приєднуйтесь до спільноти, діліться життям і зростайте разом у
-              вірі!
-            </p>
+          <Accordion title={t.homeGroups.title}>
+            <p className="mb-4">{t.homeGroups.text}</p>
             <a
               href="https://t.me/dyouthhomegroups_bot"
               className="text-purple-600 hover:text-purple-700 font-medium underline"
@@ -147,16 +249,13 @@ export default function ChurchAnnouncements() {
             </a>
           </Accordion>
 
-          <Accordion title="Молитва">
+          <Accordion title={t.prayer.title}>
             <div className="space-y-4">
               <div>
                 <p className="mb-2 font-semibold text-black-700">
-                  💬 Молитовний бот
+                  {t.prayer.bot}
                 </p>
-                <p className="mb-3">
-                  У нашому чаті працює молитовний бот, де ви можете залишити
-                  свою молитовну потребу. Спільнота буде молитися за вас!
-                </p>
+                <p className="mb-3">{t.prayer.botText}</p>
                 <a
                   href="https://t.me/dchurch_prayer_bot"
                   className="text-purple-600 hover:text-purple-700 font-medium underline"
@@ -169,33 +268,23 @@ export default function ChurchAnnouncements() {
 
               <div>
                 <p className="mb-2 font-semibold text-black-700">
-                  🙏 Молитва тут
+                  {t.prayer.here}
                 </p>
-                <p>
-                  Це спеціальний час, коли біля сцени вас очікують служителі,
-                  готові разом помолитися за вас. Не обов'язково мати особливу
-                  потребу — ви можете підійти для молитви благословення на
-                  наступний тиждень.
-                </p>
+                <p>{t.prayer.hereText}</p>
               </div>
 
               <div>
                 <p className="mb-2 font-semibold text-black-700">
-                  ✨ Молитва молоді
+                  {t.prayer.youth}
                 </p>
-                <p className="mb-1">📅 Кожен останній вівторок місяця</p>
-                <p>📍 Великий зал</p>
+                <p className="mb-1">{t.prayer.schedule}</p>
+                <p>{t.prayer.location}</p>
               </div>
             </div>
           </Accordion>
 
-          <Accordion title="Членство/Водне хрещення">
-            <p className="mb-4">
-              Якщо ви ще не є членом нашої церкви або не приймали водне хрещення
-              у зрілому віці, заохочуємо зробити цей важливий крок. Запишіться
-              за церковним номером телефону, і ми з радістю проведемо вас через
-              цей процес.
-            </p>
+          <Accordion title={t.membership.title}>
+            <p className="mb-4">{t.membership.text}</p>
             <a
               href="tel:+380738003737"
               className="text-purple-600 hover:text-purple-700 font-medium underline"
@@ -204,29 +293,20 @@ export default function ChurchAnnouncements() {
             </a>
           </Accordion>
 
-          <Accordion title="Служіння тут">
-            <p className="mb-4">
-              Якщо ви член церкви, один з ваших привілеїв — це можливість
-              служити Богу в нашій спільноті. За посиланням можна дізнатися
-              більше про актуальні служіння, залишити свої контакти та
-              долучитися.
-            </p>
+          <Accordion title={t.ministry.title}>
+            <p className="mb-4">{t.ministry.text}</p>
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSefJM3KrINTP-_dE8LPBtq_zdAQ9REVzLKu7rxrI3VVq3Te0A/viewform"
               className="text-purple-600 hover:text-purple-700 break-all underline inline-block"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Форма для реєстрації служіння
+              {t.ministry.link}
             </a>
           </Accordion>
 
-          <Accordion title="Церковна кав'ярня">
-            <p>
-              Після служіння запрошуємо вас до нашої церковної кав'ярні. Це
-              чудова можливість поспілкуватися, познайомитися з новими людьми та
-              провести час у теплій атмосфері спільноти.
-            </p>
+          <Accordion title={t.cafe.title}>
+            <p>{t.cafe.text}</p>
           </Accordion>
         </div>
         {/* Social Media Icons */}
