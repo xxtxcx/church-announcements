@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import background3 from "./assets/background3.jpg";
+import background from "./assets/background.jpg";
 import "./App.css";
 import telegramIcon from "./assets/telegram.png";
 import logo from "./assets/logo.svg";
@@ -209,7 +209,7 @@ export default function ChurchAnnouncements() {
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: `url(${background3})`,
+          backgroundImage: `url(${background})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundAttachment: "fixed"
