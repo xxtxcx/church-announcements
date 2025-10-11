@@ -87,7 +87,7 @@ export default function ChurchAnnouncements() {
       title: "ОГОЛОШЕННЯ",
       homeGroups: {
         title: "Домашні групи",
-        text: "Інформація про домашні групи, які відбудуться цього тижня. Приєднуйтесь до спільноти, діліться життям і зростайте разом у вірі!"
+        text: "Інформація про домашні групи. Приєднуйтесь до спільноти, діліться життям і зростайте разом у вірі!"
       },
       prayer: {
         title: "Молитва",
@@ -119,7 +119,7 @@ export default function ChurchAnnouncements() {
       title: "ANNOUNCEMENTS",
       homeGroups: {
         title: "Home Groups",
-        text: "Information about home groups happening this week. Join the community, share life and grow together in faith!"
+        text: "Information about home groups. Join the community, share life and grow together in faith!"
       },
       prayer: {
         title: "Prayer",
