@@ -215,9 +215,9 @@ export default function ChurchAnnouncements() {
             ) : (
               <span className="block text-6xl md:text-6xl lg:text-7xl xl:text-8xl">
                 AN
-                <br />
+                <br className="sm:hidden" />
                 NOUNCE
-                <br />
+                <br className="sm:hidden" />
                 MENTS
               </span>
             )}
