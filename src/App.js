@@ -12,7 +12,7 @@ const StarCircleIcon = ({ size = 20, className = "" }) => (
     height={size}
     className={className}
   >
-    <circle cx="200" cy="200" r="180" fill="#202020" />
+    <circle cx="200" cy="200" r="180" fill="transparent"/>
 
     <g transform="translate(200, 200) rotate(7)">
       <line x1="0" y1="0" x2="0" y2="-100" stroke="white" strokeWidth="45" />
@@ -83,12 +83,12 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
       >
         <StarCircleIcon size={20} />
       </div>
-      <div className="w-full bg-white overflow-hidden">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full bg-white px-4 sm:px-6 py-3 sm:py-4 lg:py-5 flex items-center justify-between text-left transition-all hover:bg-gray-50"
-          style={{ fontFamily: "'Namu', 'Manrope', sans-serif" }}
-        >
+      <div className="w-full bg-white overflow-visible accordion-corner-cut relative">
+  <button
+    onClick={() => setIsOpen(!isOpen)}
+    className="w-full bg-white px-4 sm:px-6 py-3 sm:py-4 lg:py-5 flex items-center justify-between text-left transition-all hover:bg-gray-50 relative z-0"
+    style={{ fontFamily: "'Namu', 'Manrope', sans-serif" }}
+  >
           <span
             className="font-semibold text-base sm:text-lg lg:text-xl uppercase tracking-wide"
             style={{ fontWeight: 600, color: "#731cfe" }}
@@ -205,6 +205,7 @@ export default function ChurchAnnouncements() {
         background: "#1a1a1a"
       }}
     >
+
       {/* Background */}
       <div
         className="absolute inset-0 w-full h-full"

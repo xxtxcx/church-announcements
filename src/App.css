@@ -61,3 +61,9 @@
   animation: ribbon-unfold 2.2s ease-out forwards;
   animation-delay: 0.5s;
 }
+
+.accordion-corner-cut {
+  position: relative;
+  -webkit-mask-image: radial-gradient(circle 10px at top left, transparent 10px, black 10px);
+  mask-image: radial-gradient(circle 10px at top left, transparent 10px, black 10px);
+}
