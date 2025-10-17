@@ -127,6 +127,14 @@ export default function ChurchAnnouncements() {
         title: "Домашні групи",
         text: "Інформація про домашні групи. Приєднуйтесь до спільноти, діліться життям і зростайте разом у вірі!"
       },
+      outreach: {
+        title: "Аутріч",
+        text: "Ми віримо, що євангелізація — не для особливих, а для всіх, хто любить Ісуса, адже наші слова можуть змінити чиєсь життя у вічності.",
+        opportunity:
+          "Якщо ти ніколи не розказував про Христа на вулиці, у тебе буде змога зробити це разом з командою citylight.",
+        date: "📅 31 жовтня, 17:00",
+        location: "📍 Зустріч у церкві — Замарстинівська 37"
+      },
       prayer: {
         title: "Молитва",
         bot: "💬 Молитовний бот",
@@ -163,6 +171,14 @@ export default function ChurchAnnouncements() {
       homeGroups: {
         title: "Home Groups",
         text: "Information about home groups. Join the community, share life and grow together in faith!"
+      },
+      outreach: {
+        title: "Outreach",
+        text: "We believe that evangelism is not for special people, but for everyone who loves Jesus, because our words can change someone's life for eternity.",
+        opportunity:
+          "If you've never shared about Christ on the streets, you'll have the opportunity to do it together with the citylight team.",
+        date: "📅 October 31, 5:00 PM",
+        location: "📍 Meeting at the church — Zamarstynivska 37"
       },
       prayer: {
         title: "Prayer",
@@ -285,6 +301,13 @@ export default function ChurchAnnouncements() {
             >
               @dyouthhomegroups_bot
             </a>
+          </Accordion>
+
+          <Accordion title={t.outreach.title}>
+            <p className="mb-3">{t.outreach.text}</p>
+            <p className="mb-4">{t.outreach.opportunity}</p>
+            <p className="mb-2 font-semibold">{t.outreach.date}</p>
+            <p className="font-semibold">{t.outreach.location}</p>
           </Accordion>
 
           <Accordion title={t.prayer.title}>
