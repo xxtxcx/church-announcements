@@ -12,7 +12,7 @@ const StarCircleIcon = ({ size = 20, className = "" }) => (
     height={size}
     className={className}
   >
-    <circle cx="200" cy="200" r="180" fill="transparent"/>
+    <circle cx="200" cy="200" r="180" fill="transparent" />
 
     <g transform="translate(200, 200) rotate(7)">
       <line x1="0" y1="0" x2="0" y2="-100" stroke="white" strokeWidth="45" />
@@ -84,11 +84,11 @@ const Accordion = ({ title, children, defaultOpen = false }) => {
         <StarCircleIcon size={20} />
       </div>
       <div className="w-full bg-white overflow-visible accordion-corner-cut relative">
-  <button
-    onClick={() => setIsOpen(!isOpen)}
-    className="w-full bg-white px-4 sm:px-6 py-3 sm:py-4 lg:py-5 flex items-center justify-between text-left transition-all hover:bg-gray-50 relative z-0"
-    style={{ fontFamily: "'Namu', 'Manrope', sans-serif" }}
-  >
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full bg-white px-4 sm:px-6 py-3 sm:py-4 lg:py-5 flex items-center justify-between text-left transition-all hover:bg-gray-50 relative z-0"
+          style={{ fontFamily: "'Namu', 'Manrope', sans-serif" }}
+        >
           <span
             className="font-semibold text-base sm:text-lg lg:text-xl uppercase tracking-wide"
             style={{ fontWeight: 600, color: "#731cfe" }}
@@ -135,6 +135,12 @@ export default function ChurchAnnouncements() {
         date: "📅 31 жовтня, 17:00",
         location: "📍 Зустріч у церкві — Замарстинівська 37"
       },
+      kairos: {
+        title: "Курс Кайрос 2025",
+        text: "Інтерактивний курс для християн, які хочуть бути учасниками здійснення Божої роботи у світі. Він охоплює біблійну місію, історію, стратегію та культурні бар'єри. Знайдіть своє покликання в глобальному Божому плані!",
+        register: "Зареєструватися",
+        moreInfo: "Детальна інформація про курс"
+      },
       prayer: {
         title: "Молитва",
         bot: "💬 Молитовний бот",
@@ -180,6 +186,12 @@ export default function ChurchAnnouncements() {
         date: "📅 October 31, 5:00 PM",
         location: "📍 Meeting at the church — Zamarstynivska 37"
       },
+      kairos: {
+        title: "Kairos Course 2025",
+        text: "An interactive course for Christians who want to participate in God's work in the world. It covers biblical mission, history, strategy, and cultural barriers. Find your calling in God's global plan!",
+        register: "Register",
+        moreInfo: "Detailed course information"
+      },
       prayer: {
         title: "Prayer",
         bot: "💬 Prayer Bot",
@@ -221,7 +233,6 @@ export default function ChurchAnnouncements() {
         background: "#1a1a1a"
       }}
     >
-
       {/* Background */}
       <div
         className="absolute inset-0 w-full h-full"
@@ -308,6 +319,29 @@ export default function ChurchAnnouncements() {
             <p className="mb-4">{t.outreach.opportunity}</p>
             <p className="mb-2 font-semibold">{t.outreach.date}</p>
             <p className="font-semibold">{t.outreach.location}</p>
+          </Accordion>
+
+          <Accordion title={t.kairos.title}>
+            <p className="mb-4">{t.kairos.text}</p>
+            <div className="space-y-3">
+              <a
+                href="https://forms.gle/L2duRuxSmgSXQdGf9"
+                className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-all"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t.kairos.register}
+              </a>
+              <br />
+              <a
+                href="https://drive.google.com/file/d/1wYDixOdMwSwi97e2hErLVHlSFHSSnSps/view"
+                className="text-purple-600 hover:text-purple-700 font-medium underline inline-block"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t.kairos.moreInfo} →
+              </a>
+            </div>
           </Accordion>
 
           <Accordion title={t.prayer.title}>
