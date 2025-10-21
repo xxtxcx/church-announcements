@@ -334,7 +334,7 @@ export default function ChurchAnnouncements() {
               </a>
               <br />
               <a
-                href="https://drive.google.com/file/d/1wYDixOdMwSwi97e2hErLVHlSFHSSnSps/view"
+                href="https://drive.google.com/file/d/1irbfJ9yoCL49DqHWZQBSQYZjt2Nh1tuV/view?usp=drivesdk"
                 className="text-purple-600 hover:text-purple-700 font-medium underline inline-block"
                 target="_blank"
                 rel="noopener noreferrer"
