@@ -224,7 +224,7 @@ export default function ChurchAnnouncements() {
   sundayTitle: "35th ANNIVERSARY CELEBRATION at all three services",
   sunday1: "• 10:00 AM Senior Bishop of UECCU HAVRYLYUK A.P. preaching",
   sunday2: "• 12:00 PM Senior Pastor BILYK V.D. preaching",
-  sunday3: "• 4:00 PM Bishop MIRO TOT preaching"
+  sunday3: "• 4:00 PM Bishop MIRO TOTH preaching"
 },
       prayer: {
         title: "Prayer",
