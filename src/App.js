@@ -127,6 +127,23 @@ export default function ChurchAnnouncements() {
         title: "Домашні групи",
         text: "Інформація про домашні групи. Приєднуйтесь до спільноти, діліться життям і зростайте разом у вірі!"
       },
+      anniversary: {
+  title: "Святкування 35-річниці церкви",
+  intro: "Святкування 35-річниці церкви «Джерело Життя»",
+  thursday: "🗓️ ЧЕТВЕР, 18:30",
+  thursdayText: "Служитиме давній друг нашої церкви ВЕЙН ХЕНДРІКСОН (США)",
+  friday: "🗓️ П'ЯТНИЦЯ, 18:00",
+  fridayTitle: "Жива Історія!",
+  fridayText: "Служитиме пастор ВОЛОДИМИР ФАЙФАР. Ми будемо згадувати Боже діяння в історії церкви «Джерело життя».",
+  saturday: "🗓️ СУБОТА, 16:00",
+  saturdayText: "ВЕЧІР ХВАЛИ з D.WORSHIP",
+  saturdayConf: "11:00-15:00 Конференція для служителів. Участь можлива тільки за реєстрацією.",
+  sunday: "🗓️ НЕДІЛЯ",
+  sundayTitle: "СВЯТКУВАННЯ 35-річниці на усіх трьох потоках",
+  sunday1: "• 10:00 Проповідує Старший Єпископ ЦХХЦУ ГАВРИЛЮК А.П.",
+  sunday2: "• 12:00 Проповідує Старший пастор БІЛИК В.Д.",
+  sunday3: "• 16:00 Проповідує Єпископ МІРО ТОТ"
+},
       outreach: {
         title: "Аутріч",
         text: "Ми віримо, що євангелізація — не для особливих, а для всіх, хто любить Ісуса, адже наші слова можуть змінити чиєсь життя у вічності.",
@@ -192,6 +209,23 @@ export default function ChurchAnnouncements() {
         register: "Register",
         moreInfo: "Detailed course information"
       },
+      anniversary: {
+  title: "Church 35th Anniversary Celebration",
+  intro: "Celebrating the 35th Anniversary of 'Spring of Life' Church",
+  thursday: "🗓️ THURSDAY, 6:30 PM",
+  thursdayText: "Our longtime church friend WAYNE HENDRICKSON (USA) will minister",
+  friday: "🗓️ FRIDAY, 6:00 PM",
+  fridayTitle: "Living History!",
+  fridayText: "Pastor VOLODYMYR FAYFAR will minister. We will remember God's work in the history of 'Spring of Life' church.",
+  saturday: "🗓️ SATURDAY, 4:00 PM",
+  saturdayText: "EVENING OF WORSHIP with D.WORSHIP",
+  saturdayConf: "11:00 AM-3:00 PM Ministers' Conference. Participation by registration only.",
+  sunday: "🗓️ SUNDAY",
+  sundayTitle: "35th ANNIVERSARY CELEBRATION at all three services",
+  sunday1: "• 10:00 AM Senior Bishop of UECCU HAVRYLYUK A.P. preaching",
+  sunday2: "• 12:00 PM Senior Pastor BILYK V.D. preaching",
+  sunday3: "• 4:00 PM Bishop MIRO TOT preaching"
+},
       prayer: {
         title: "Prayer",
         bot: "💬 Prayer Bot",
@@ -343,7 +377,38 @@ export default function ChurchAnnouncements() {
               </a>
             </div>
           </Accordion>
+<Accordion title={t.anniversary.title}>
+  <p className="mb-4 font-semibold text-lg">{t.anniversary.intro}</p>
+  
+  <div className="space-y-4">
+    <div>
+      <p className="font-bold text-purple-700 mb-1">{t.anniversary.thursday}</p>
+      <p>{t.anniversary.thursdayText}</p>
+    </div>
 
+    <div>
+      <p className="font-bold text-purple-700 mb-1">{t.anniversary.friday}</p>
+      <p className="font-semibold mb-1">{t.anniversary.fridayTitle}</p>
+      <p>{t.anniversary.fridayText}</p>
+    </div>
+
+    <div>
+      <p className="font-bold text-purple-700 mb-1">{t.anniversary.saturday}</p>
+      <p className="font-semibold mb-2">{t.anniversary.saturdayText}</p>
+      <p className="text-sm text-gray-600">{t.anniversary.saturdayConf}</p>
+    </div>
+
+    <div>
+      <p className="font-bold text-purple-700 mb-1">{t.anniversary.sunday}</p>
+      <p className="font-semibold mb-2">{t.anniversary.sundayTitle}</p>
+      <div className="space-y-1">
+        <p>{t.anniversary.sunday1}</p>
+        <p>{t.anniversary.sunday2}</p>
+        <p>{t.anniversary.sunday3}</p>
+      </div>
+    </div>
+  </div>
+</Accordion>
           <Accordion title={t.prayer.title}>
             <div className="space-y-4">
               <div>
