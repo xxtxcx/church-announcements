@@ -17,8 +17,7 @@ export default function ObsHelper() {
   const [text1, setText1] = useState("");
   const [text2, setText2] = useState("");
   const [isShowing, setIsShowing] = useState(false);
-  const [obsConnected, setObsConnected] = useState(false);
-  const [obsConfig, setObsConfig] = useState(getOBSConfig());
+  const [obsConfig] = useState(getOBSConfig());
   const [inputText1, setInputText1] = useState("");
   const [inputText2, setInputText2] = useState("");
   const [hasControlAccess, setHasControlAccess] = useState(true);
@@ -275,7 +274,7 @@ export default function ObsHelper() {
       }
 
       try {
-        const { wsUrl, wsPassword } = obsConfig;
+        const { wsUrl } = obsConfig;
         
         // Перевіряємо, чи вже є активне з'єднання
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -287,7 +286,6 @@ export default function ObsHelper() {
 
         ws.onopen = () => {
           console.log("✅ Підключено до OBS WebSocket");
-          setObsConnected(true);
           reconnectAttempts = 0; // Скидаємо лічильник при успішному підключенні
           
           // OBS WebSocket 5.x протокол: спочатку отримуємо Hello з інформацією про автентифікацію
@@ -335,7 +333,6 @@ export default function ObsHelper() {
             } else if (data.op === 2) {
               // Identified - успішна автентифікація
               console.log("✅ OBS WebSocket автентифіковано");
-              setObsConnected(true);
             } else if (data.op === 5) {
               // RequestResponse - відповідь на запит
               console.log("OBS Response:", data);
@@ -374,12 +371,9 @@ export default function ObsHelper() {
           if (reconnectAttempts === 0) {
             console.warn("⚠️ OBS WebSocket: Не вдалося підключитися. Перевірте, чи запущений OBS та чи увімкнений WebSocket сервер.");
           }
-          setObsConnected(false);
         };
 
         ws.onclose = (event) => {
-          setObsConnected(false);
-          
           // Якщо це не ручне закриття і не досягнуто максимум спроб
           if (!isManualClose && reconnectAttempts < maxReconnectAttempts) {
             reconnectAttempts++;
@@ -392,7 +386,6 @@ export default function ObsHelper() {
         };
       } catch (error) {
         console.error("Помилка підключення до OBS:", error);
-        setObsConnected(false);
       }
     };
 
