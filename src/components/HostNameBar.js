@@ -68,8 +68,7 @@ const HostNameBar = ({ text1, text2, settings, onComplete }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const starRadius = 25;
-    const starPadding = 10;
-    
+
     // Встановлюємо розмір canvas з урахуванням device pixel ratio для чіткості
     const dpr = window.devicePixelRatio || 1;
     canvas.width = starRadius * 2 * 2 * dpr;
@@ -205,18 +204,6 @@ const HostNameBar = ({ text1, text2, settings, onComplete }) => {
   // Визначаємо розміри canvas для зірочки
   const starRadius = 25;
   const starPadding = 10;
-  const getCanvasDimensions = () => {
-    if (starPosition === "none") {
-      return { width: 0, height: 0 };
-    }
-    if (starPosition === "inside") {
-      return { width: 0, height: 0 }; // Canvas буде абсолютно позиціонований
-    }
-    // outside
-    return { width: starRadius, height: starRadius * 2 };
-  };
-
-  const canvasDims = getCanvasDimensions();
 
   return (
     <div style={containerStyle}>
