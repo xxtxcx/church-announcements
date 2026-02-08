@@ -16,7 +16,21 @@ let sharedSettings = {
   text2Color: "#CCCCCC",
   text1: "",
   text2: "",
-  side: "left"
+  side: "left",
+  width: "auto",
+  height: "auto",
+  verticalPosition: "bottom",
+  topOffset: "32px",
+  bottomOffset: "32px",
+  text1Font: "'Namu', 'Manrope', sans-serif",
+  text2Font: "'Namu', 'Manrope', sans-serif",
+  text1Size: "24px",
+  text2Size: "20px",
+  textPaddingLeft: "0px",
+  textPaddingRight: "0px",
+  textGap: "4px",
+  starPosition: "none",
+  starColor: "#731cfe"
 };
 
 const PORT = 3001;

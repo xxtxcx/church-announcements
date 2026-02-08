@@ -27,7 +27,21 @@ export default function ObsHelper() {
     text2Color: "#CCCCCC",
     text1: "",
     text2: "",
-    side: "left"
+    side: "left",
+    width: "auto",
+    height: "auto",
+    verticalPosition: "bottom", // "top", "center", "bottom"
+    topOffset: "32px",
+    bottomOffset: "32px",
+    text1Font: "'Namu', 'Manrope', sans-serif",
+    text2Font: "'Namu', 'Manrope', sans-serif",
+    text1Size: "24px",
+    text2Size: "20px",
+    textPaddingLeft: "0px",
+    textPaddingRight: "0px",
+    textGap: "4px", // Відстань між текстом 1 та текстом 2
+    starPosition: "none", // "none", "outside", "inside"
+    starColor: "#731cfe"
   });
   const wsRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
@@ -620,11 +634,17 @@ export default function ObsHelper() {
       });
   };
 
+  const [previewSettings, setPreviewSettings] = useState(null);
+
   const handleSettingsChange = (newSettings) => {
     setSettings(newSettings);
   };
 
-  const handleShowName = () => {
+  const handlePreview = (previewSettingsData) => {
+    setPreviewSettings(previewSettingsData);
+  };
+
+  const handleShowName = (newSettings) => {
     // Якщо плашка вже показується, приховуємо її
     if (isShowing) {
       const timestamp = Date.now();
@@ -660,14 +680,18 @@ export default function ObsHelper() {
       return;
     }
     
-    // Інакше показуємо плашку
+    // Якщо передано нові налаштування, застосовуємо їх
+    if (newSettings) {
+      handleSettingsChange(newSettings);
+    }
+    
+    // Показуємо плашку з поточними налаштуваннями
     const t1 = inputText1.trim() || settings.text1 || "";
     const t2 = inputText2.trim() || settings.text2 || "";
     
     if (t1 || t2) {
       showHostName(t1, t2);
-      setInputText1("");
-      setInputText2("");
+      // Не скидаємо значення полів - вони залишаються для повторного використання
     }
   };
 
@@ -747,7 +771,7 @@ export default function ObsHelper() {
       {/* Об'єднана панель управління (завжди видима, прихована тільки з ?control=false) */}
       {hasControlAccess && (
         <ControlPanel
-          settings={settings}
+          settings={previewSettings || settings}
           onSettingsChange={handleSettingsChange}
           inputText1={inputText1}
           setInputText1={setInputText1}
@@ -756,6 +780,7 @@ export default function ObsHelper() {
           onShowName={handleShowName}
           isShowing={isShowing}
           onKeyPress={handleKeyPress}
+          onPreview={handlePreview}
         />
       )}
     </div>

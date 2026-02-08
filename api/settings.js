@@ -9,7 +9,21 @@ if (!global.sharedSettings) {
     text2Color: "#CCCCCC",
     text1: "",
     text2: "",
-    side: "left"
+    side: "left",
+    width: "auto",
+    height: "auto",
+    verticalPosition: "bottom",
+    topOffset: "32px",
+    bottomOffset: "32px",
+    text1Font: "'Namu', 'Manrope', sans-serif",
+    text2Font: "'Namu', 'Manrope', sans-serif",
+    text1Size: "24px",
+    text2Size: "20px",
+    textPaddingLeft: "0px",
+    textPaddingRight: "0px",
+    textGap: "4px",
+    starPosition: "none",
+    starColor: "#731cfe"
   };
 }
 
@@ -35,11 +49,11 @@ export default function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const settings = req.body;
-      sharedSettings = { ...sharedSettings, ...settings };
+      global.sharedSettings = { ...global.sharedSettings, ...settings };
       
       res.status(200).json({ 
         success: true, 
-        settings: sharedSettings 
+        settings: global.sharedSettings 
       });
     } catch (error) {
       res.status(400).json({ error: 'Invalid JSON' });
