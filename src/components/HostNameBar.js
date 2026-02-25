@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 const HostNameBar = ({ text1, text2, settings, onComplete }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [isEntering, setIsEntering] = useState(true);
-  const canvasRef = useRef(null);
-  const animationRef = useRef(null);
 
-  // Використовуємо налаштування або значення за замовчуванням
   const bgColor = settings?.backgroundColor || "rgba(0, 0, 0, 0.85)";
   const text1Color = settings?.text1Color || "#FFFFFF";
   const text2Color = settings?.text2Color || "#CCCCCC";
@@ -26,95 +23,15 @@ const HostNameBar = ({ text1, text2, settings, onComplete }) => {
   const textGap = settings?.textGap || "4px";
   const starPosition = settings?.starPosition || "none";
   const starColor = settings?.starColor || "#731cfe";
-
-  // Функція для малювання зірочки
-  const drawStar = (ctx, cx, cy, color, size = 18) => {
-    const scale = size / 100;
-    
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(7 * Math.PI / 180);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 45 * scale;
-    ctx.lineCap = 'butt';
-    
-    const lines = [
-      { x: 0, y: 0, x2: 0, y2: -100 * scale },
-      { x: 0, y: 0, x2: 95 * scale, y2: -31 * scale },
-      { x: 0, y: 0, x2: 58 * scale, y2: 81 * scale },
-      { x: 0, y: 0, x2: -58 * scale, y2: 81 * scale },
-      { x: 0, y: 0, x2: -95 * scale, y2: -31 * scale }
-    ];
-    
-    lines.forEach(line => {
-      ctx.beginPath();
-      ctx.moveTo(line.x, line.y);
-      ctx.lineTo(line.x2, line.y2);
-      ctx.stroke();
-    });
-    
-    ctx.restore();
-  };
-
-  // Анімація зірочки
-  useEffect(() => {
-    if (starPosition === "none" || !canvasRef.current) {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      return;
-    }
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const starRadius = 25;
-
-    // Встановлюємо розмір canvas з урахуванням device pixel ratio для чіткості
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = starRadius * 2 * 2 * dpr;
-    canvas.height = starRadius * 2 * 2 * dpr;
-    ctx.scale(dpr, dpr);
-    
-    let startTime = Date.now();
-
-    const animate = () => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      const rotation = elapsed * Math.PI * 2;
-      
-      // Очищаємо canvas
-      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-      
-      // Визначаємо позицію зірочки (центр canvas)
-      const starX = starRadius * 2;
-      const starY = starRadius * 2;
-      
-      // Біле коло
-      ctx.fillStyle = 'white';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(starX, starY, starRadius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowColor = 'transparent';
-
-      // Зірочка
-      ctx.save();
-      ctx.translate(starX, starY);
-      ctx.rotate(rotation);
-      drawStar(ctx, 0, 0, starColor, 18);
-      ctx.restore();
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [starPosition, starColor]);
+  const hasStar = starPosition !== "none";
+  const text1LetterSpacing = settings?.text1LetterSpacing ?? "";
+  const text2LetterSpacing = settings?.text2LetterSpacing ?? "";
+  const text1TextTransform = settings?.text1TextTransform ?? "";
+  const paddingTop = settings?.paddingTop ?? "";
+  const paddingBottom = settings?.paddingBottom ?? "";
+  const badgeTemplate = settings?.badgeTemplate ?? "custom";
+  const isTemplateStyle = badgeTemplate === "purple" || badgeTemplate === "dark" || badgeTemplate === "teal";
+  const badgeScale = Math.min(200, Math.max(100, Number(settings?.badgeScale) || 100));
 
   useEffect(() => {
     // Початок анімації появи - спочатку плашка за межами екрану
@@ -201,77 +118,94 @@ const HostNameBar = ({ text1, text2, settings, onComplete }) => {
     containerStyle.right = rightPosition;
   }
 
-  // Визначаємо розміри canvas для зірочки
-  const starRadius = 25;
-  const starPadding = 10;
+  const scaleOriginX = side === "right" ? "100%" : "0%";
+  const scaleOriginY = verticalPosition === "top" ? "0%" : verticalPosition === "bottom" ? "100%" : "50%";
 
   return (
     <div style={containerStyle}>
       <div
         style={{
-          position: "relative",
-          padding: "16px 32px",
-          borderRadius: "8px",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+          display: "inline-block",
+          transform: `scale(${badgeScale / 100})`,
+          transformOrigin: `${scaleOriginX} ${scaleOriginY}`
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            paddingTop: paddingTop || (isTemplateStyle ? "10px" : "16px"),
+          paddingBottom: paddingBottom || (isTemplateStyle ? "10px" : "16px"),
+          paddingLeft: textPaddingLeft || (isTemplateStyle ? "24px" : "32px"),
+          paddingRight: textPaddingRight || (isTemplateStyle ? "24px" : "32px"),
+          borderRadius: isTemplateStyle ? 0 : "8px",
+          boxShadow: isTemplateStyle ? "none" : "0 4px 20px rgba(0, 0, 0, 0.5)",
           background: bgColor,
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          border: "2px solid rgba(255, 255, 255, 0.3)",
+          backdropFilter: isTemplateStyle ? "none" : "blur(10px)",
+          WebkitBackdropFilter: isTemplateStyle ? "none" : "blur(10px)",
+          border: isTemplateStyle ? "none" : "2px solid rgba(255, 255, 255, 0.3)",
           width: width === "auto" ? "auto" : "100%",
-          minWidth: width === "auto" ? "200px" : "unset",
+          minWidth: width === "auto" ? (isTemplateStyle ? "unset" : "200px") : "unset",
           maxWidth: width === "auto" ? "none" : "100%",
           height: height === "auto" ? "auto" : height,
           boxSizing: "border-box",
-          paddingRight: starPosition === "outside" ? `${starRadius + 20}px` : "32px"
+          display: "inline-flex",
+          flexDirection: "column"
         }}
       >
-        {/* Canvas для зірочки всередині */}
-        {starPosition === "inside" && (
-          <canvas
-            ref={canvasRef}
+        {/* Зірочка: SVG + CSS-анімація (працює в OBS без requestAnimationFrame) */}
+        {hasStar && (
+          <div
             style={{
               position: "absolute",
-              top: `${starPadding}px`,
-              right: `${starPadding}px`,
-              width: `${starRadius * 2}px`,
-              height: `${starRadius * 2}px`,
+              width: "26px",
+              height: "26px",
+              ...(side === "right"
+                ? { left: 0, top: 0, transform: "translate(-50%, -50%)" }
+                : { right: 0, top: 0, transform: "translate(50%, -50%)" }),
               pointerEvents: "none",
               zIndex: 10
             }}
-            width={starRadius * 2 * 2}
-            height={starRadius * 2 * 2}
-          />
-        )}
-        
-        {/* Canvas для зірочки зовні */}
-        {starPosition === "outside" && (
-          <canvas
-            ref={canvasRef}
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: `-${starRadius}px`,
-              transform: "translateY(-50%)",
-              width: `${starRadius * 2}px`,
-              height: `${starRadius * 2}px`,
-              pointerEvents: "none",
-              zIndex: 10
-            }}
-            width={starRadius * 2 * 2}
-            height={starRadius * 2 * 2}
-          />
+          >
+            <svg
+              viewBox="0 0 50 50"
+              width="26"
+              height="26"
+              style={{
+                display: "block",
+                transformOrigin: "50% 50%",
+                animation: "starRotate 3s linear infinite"
+              }}
+            >
+              <defs>
+                <filter id="starShadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="1.5" floodColor="rgba(0,0,0,0.3)" />
+                </filter>
+              </defs>
+              <circle cx="25" cy="25" r="25" fill="white" filter="url(#starShadow)" />
+              <g stroke={starColor} strokeWidth="7" strokeLinecap="butt">
+                <line x1="25" y1="25" x2="25" y2="7" />
+                <line x1="25" y1="25" x2="42.1" y2="19.42" />
+                <line x1="25" y1="25" x2="35.44" y2="39.58" />
+                <line x1="25" y1="25" x2="14.56" y2="39.58" />
+                <line x1="25" y1="25" x2="7.9" y2="19.42" />
+              </g>
+            </svg>
+          </div>
         )}
         {text1 && (
           <div
             style={{
               color: text1Color,
               fontSize: text1Size,
-              fontWeight: "bold",
+              fontWeight: "500",
+              lineHeight: 1,
+              letterSpacing: text1LetterSpacing || undefined,
+              textTransform: text1TextTransform || undefined,
               whiteSpace: width === "auto" ? "nowrap" : "normal",
               wordWrap: width === "auto" ? "normal" : "break-word",
               overflowWrap: width === "auto" ? "normal" : "break-word",
               fontFamily: text1Font,
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
+              textShadow: isTemplateStyle ? "none" : "2px 2px 4px rgba(0, 0, 0, 0.8)",
               margin: 0,
               padding: `0 ${textPaddingRight} 0 ${textPaddingLeft}`,
               marginBottom: text2 ? textGap : "0"
@@ -285,11 +219,14 @@ const HostNameBar = ({ text1, text2, settings, onComplete }) => {
             style={{
               color: text2Color,
               fontSize: text2Size,
+              fontWeight: "400",
+              lineHeight: 1,
+              letterSpacing: text2LetterSpacing || undefined,
               whiteSpace: width === "auto" ? "nowrap" : "normal",
               wordWrap: width === "auto" ? "normal" : "break-word",
               overflowWrap: width === "auto" ? "normal" : "break-word",
               fontFamily: text2Font,
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
+              textShadow: isTemplateStyle ? "none" : "2px 2px 4px rgba(0, 0, 0, 0.8)",
               margin: 0,
               padding: `0 ${textPaddingRight} 0 ${textPaddingLeft}`
             }}
@@ -297,6 +234,7 @@ const HostNameBar = ({ text1, text2, settings, onComplete }) => {
             {text2}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

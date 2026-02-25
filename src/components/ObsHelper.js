@@ -30,7 +30,7 @@ export default function ObsHelper() {
     side: "left",
     width: "auto",
     height: "auto",
-    verticalPosition: "bottom", // "top", "center", "bottom"
+    verticalPosition: "bottom",
     topOffset: "32px",
     bottomOffset: "32px",
     text1Font: "'Namu', 'Manrope', sans-serif",
@@ -39,14 +39,24 @@ export default function ObsHelper() {
     text2Size: "20px",
     textPaddingLeft: "0px",
     textPaddingRight: "0px",
-    textGap: "4px", // Відстань між текстом 1 та текстом 2
-    starPosition: "none", // "none", "outside", "inside"
-    starColor: "#731cfe"
+    textGap: "4px",
+    starPosition: "none",
+    starColor: "#731cfe",
+    badgeTemplate: "custom",
+    badgeScale: 100,
+    text1LetterSpacing: "",
+    text2LetterSpacing: "",
+    text1TextTransform: "",
+    paddingTop: "",
+    paddingBottom: ""
   });
   const wsRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const broadcastChannelRef = useRef(null);
   const storagePollIntervalRef = useRef(null);
+  const syncLastVersionRef = useRef(0);
+  const syncInFlightRef = useRef(false);
+  const POLL_INTERVAL_MS = 400;
 
   // Перевірка, чи є доступ до панелі управління
   useEffect(() => {
@@ -93,179 +103,88 @@ export default function ObsHelper() {
       });
   }, []);
 
-  // Синхронізація стану між браузером та OBS через BroadcastChannel та localStorage
+  // Синхронізація стану: сервер — єдине джерело правди (GET повертає повний стан)
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const isOBS = urlParams.get("control") !== "true"; // Якщо немає ?control=true, то це OBS
-    console.log("🔧 Ініціалізація синхронізації стану...", isOBS ? "(OBS Browser Source)" : "(Браузер з панеллю управління)");
-    
-    // Змінна для відстеження останньої обробленої команди (всередині useEffect)
-    let lastProcessedTimestamp = 0;
-    
-    // Створюємо BroadcastChannel для синхронізації між вкладками/вікнами
+    const isOBS = urlParams.get("control") !== "true";
+    console.log("🔧 Синхронізація стану (поллінг кожні " + POLL_INTERVAL_MS + "мс)...", isOBS ? "(OBS)" : "(Панель)");
+
     let channel = null;
     try {
       channel = new BroadcastChannel("obs-helper-sync");
       broadcastChannelRef.current = channel;
-      console.log("✅ BroadcastChannel створено");
-
-      // Слухаємо повідомлення від інших екземплярів
       channel.onmessage = (event) => {
-        console.log("📨 Отримано повідомлення через BroadcastChannel:", event.data);
-        const { type, data } = event.data;
-        
+        const { type, data } = event.data || {};
         if (type === "SHOW_HOST_NAME") {
-          console.log("✅ Отримано команду показати плашку через BroadcastChannel:", data);
-          setText1(data.text1 || "");
-          setText2(data.text2 || "");
-          if (data.settings) {
-            setSettings(data.settings);
-          }
+          setText1(data?.text1 || "");
+          setText2(data?.text2 || "");
+          if (data?.settings) setSettings((prev) => ({ ...prev, ...data.settings }));
           setIsShowing(true);
         } else if (type === "HIDE_HOST_NAME") {
-          console.log("✅ Отримано команду приховати плашку через BroadcastChannel");
           setIsShowing(false);
           setText1("");
           setText2("");
         }
       };
-    } catch (error) {
-      console.warn("⚠️ BroadcastChannel не підтримується:", error);
+    } catch (e) {
+      console.warn("⚠️ BroadcastChannel не підтримується:", e);
     }
 
-    // Перевіряємо HTTP сервер синхронізації (основний механізм)
     const checkServer = async () => {
+      if (syncInFlightRef.current) return;
+      syncInFlightRef.current = true;
       try {
-        // Спочатку перевіряємо налаштування
-        const settingsResponse = await fetch("/api/settings");
-        if (settingsResponse.ok) {
-          const contentType = settingsResponse.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const settingsData = await settingsResponse.json();
-            if (settingsData.settings) {
-              setSettings(prev => {
-                const newSettings = { ...prev, ...settingsData.settings };
-                localStorage.setItem("obs-helper-settings", JSON.stringify(newSettings));
-                return newSettings;
-              });
-            }
-          }
+        const since = syncLastVersionRef.current;
+        const response = await fetch(`/api/sync?since=${since}`);
+        if (!response.ok || !response.headers.get("content-type")?.includes("application/json")) {
+          return;
         }
-        
-        // Потім перевіряємо команди
-        const response = await fetch(`/api/sync?since=${lastProcessedTimestamp}`);
-        if (response.ok) {
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const data = await response.json();
-            if (data.command && data.timestamp > lastProcessedTimestamp) {
-              const command = data.command;
-              const commandTime = data.timestamp;
-              const now = Date.now();
-              
-              console.log("🔍 Перевірка сервера синхронізації:", {
-                commandTime,
-                lastProcessed: lastProcessedTimestamp,
-                isNew: commandTime > lastProcessedTimestamp,
-                isFresh: (now - commandTime < 10000),
-                commandType: command.type
-              });
-              
-              // Обробляємо тільки нові команди (не старіші за 10 секунд)
-              if (commandTime > lastProcessedTimestamp && (now - commandTime < 10000)) {
-                console.log("📦 Отримано НОВУ команду з сервера:", command);
-                
-                if (command.type === "SHOW_HOST_NAME") {
-                  console.log("✅ Виконую команду SHOW_HOST_NAME:", command.data);
-                  lastProcessedTimestamp = commandTime;
-                  
-                  // Оновлюємо стан
-                  setText1(command.data.text1 || "");
-                  setText2(command.data.text2 || "");
-                  if (command.data.settings) {
-                    setSettings(command.data.settings);
-                  }
-                  setIsShowing(true);
-                  
-                  console.log("✅ Стан оновлено: isShowing=true, text1=" + command.data.text1 + ", text2=" + command.data.text2);
-                } else if (command.type === "HIDE_HOST_NAME") {
-                  console.log("✅ Виконую команду HIDE_HOST_NAME");
-                  lastProcessedTimestamp = commandTime;
-                  
-                  // Оновлюємо стан
-                  setIsShowing(false);
-                  setText1("");
-                  setText2("");
-                  
-                  console.log("✅ Стан оновлено: isShowing=false");
-                }
-              }
-            }
-          }
+        const data = await response.json();
+        if (data.unchanged || data.version <= since) return;
+        syncLastVersionRef.current = data.version;
+        setText1(data.text1 ?? "");
+        setText2(data.text2 ?? "");
+        setIsShowing(Boolean(data.isShowing));
+        if (data.settings && typeof data.settings === "object") {
+          setSettings((prev) => ({ ...prev, ...data.settings }));
         }
       } catch (error) {
-        // Сервер недоступний, використовуємо localStorage як fallback
-        console.warn("⚠️ Сервер синхронізації недоступний, використовуємо localStorage:", error.message);
-        
-        // Fallback до localStorage
         try {
-          const storedCommand = localStorage.getItem("obs-helper-command");
-          if (storedCommand) {
-            const command = JSON.parse(storedCommand);
-            const commandTime = command.timestamp || 0;
-            const now = Date.now();
-            
-            if (commandTime > lastProcessedTimestamp && (now - commandTime < 5000)) {
-              console.log("📦 Отримано команду з localStorage (fallback):", command);
-              
-              if (command.type === "SHOW_HOST_NAME") {
-                lastProcessedTimestamp = commandTime;
-                setText1(command.data.text1 || "");
-                setText2(command.data.text2 || "");
-                if (command.data.settings) {
-                  setSettings(command.data.settings);
-                }
-                setIsShowing(true);
-              } else if (command.type === "HIDE_HOST_NAME") {
-                lastProcessedTimestamp = commandTime;
-                setIsShowing(false);
-                setText1("");
-                setText2("");
-              }
-            }
+          const raw = localStorage.getItem("obs-helper-command");
+          if (!raw) return;
+          const cmd = JSON.parse(raw);
+          const ts = cmd.timestamp || 0;
+          if (Date.now() - ts > 5000) return;
+          if (cmd.type === "SHOW_HOST_NAME" && cmd.data) {
+            setText1(cmd.data.text1 ?? "");
+            setText2(cmd.data.text2 ?? "");
+            if (cmd.data.settings) setSettings((prev) => ({ ...prev, ...cmd.data.settings }));
+            setIsShowing(true);
+          } else if (cmd.type === "HIDE_HOST_NAME") {
+            setIsShowing(false);
+            setText1("");
+            setText2("");
           }
-        } catch (localError) {
-          console.error("❌ Помилка читання з localStorage:", localError);
+        } catch (localErr) {
+          console.warn("Сервер недоступний, localStorage fallback:", localErr);
         }
+      } finally {
+        syncInFlightRef.current = false;
       }
     };
 
-    // Перевіряємо HTTP сервер часто (кожні 100мс для швидшої реакції в OBS)
-    storagePollIntervalRef.current = setInterval(checkServer, 100);
-    
-    // Перевіряємо одразу
+    storagePollIntervalRef.current = setInterval(checkServer, POLL_INTERVAL_MS);
     checkServer();
-    console.log("✅ Polling сервера синхронізації запущено (кожні 100мс)");
-    
-    // Також слухаємо події storage для миттєвої реакції (fallback)
-    const handleStorageChange = (e) => {
-      if (e.key === "obs-helper-command" && e.newValue) {
-        console.log("📢 Storage подія отримана (fallback):", e.newValue);
-        checkServer();
-      }
+
+    const onStorage = (e) => {
+      if (e.key === "obs-helper-command" && e.newValue) checkServer();
     };
-    
-    window.addEventListener("storage", handleStorageChange);
-    
-    // Очищення
+    window.addEventListener("storage", onStorage);
+
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      if (channel) {
-        channel.close();
-      }
-      if (storagePollIntervalRef.current) {
-        clearInterval(storagePollIntervalRef.current);
-      }
+      window.removeEventListener("storage", onStorage);
+      if (channel) channel.close();
+      if (storagePollIntervalRef.current) clearInterval(storagePollIntervalRef.current);
     };
   }, []);
 
@@ -429,30 +348,33 @@ export default function ObsHelper() {
     console.log("OBS Event:", eventData);
   };
 
-  // Функція для показу плашки
-  const showHostName = useCallback((text1Value, text2Value) => {
+  // Функція для показу плашки. settingsOverride — налаштування з панелі (щоб не перезатирати шаблон старим станом)
+  const showHostName = useCallback((text1Value, text2Value, settingsOverride) => {
     if (isShowing) {
       console.log("⚠️ Плашка вже показується, пропускаємо");
       return;
     }
-    
+
+    const settingsToUse = settingsOverride && typeof settingsOverride === "object" ? settingsOverride : settings;
+    if (settingsOverride) {
+      setSettings(settingsToUse);
+    }
+
     const timestamp = Date.now();
-    const t1 = text1Value || settings.text1 || "";
-    const t2 = text2Value || settings.text2 || "";
-    
+    const t1 = text1Value ?? settingsToUse.text1 ?? "";
+    const t2 = text2Value ?? settingsToUse.text2 ?? "";
+
     console.log("🚀 Показуємо плашку:", { text1: t1, text2: t2, timestamp });
-    
-    // Оновлюємо локальний стан
+
     setText1(t1);
     setText2(t2);
     setIsShowing(true);
-    
-    // Відправляємо команду через BroadcastChannel
+
     if (broadcastChannelRef.current) {
       try {
         broadcastChannelRef.current.postMessage({
           type: "SHOW_HOST_NAME",
-          data: { text1: t1, text2: t2, settings },
+          data: { text1: t1, text2: t2, settings: settingsToUse },
           timestamp
         });
         console.log("📤 Відправлено через BroadcastChannel");
@@ -460,12 +382,11 @@ export default function ObsHelper() {
         console.error("❌ Помилка відправки через BroadcastChannel:", error);
       }
     }
-    
-    // Зберігаємо в localStorage (fallback)
+
     try {
       const command = {
         type: "SHOW_HOST_NAME",
-        data: { text1: t1, text2: t2, settings },
+        data: { text1: t1, text2: t2, settings: settingsToUse },
         timestamp
       };
       localStorage.setItem("obs-helper-command", JSON.stringify(command));
@@ -473,8 +394,7 @@ export default function ObsHelper() {
     } catch (error) {
       console.error("❌ Помилка збереження команди в localStorage:", error);
     }
-    
-    // Відправляємо на HTTP сервер синхронізації (основний механізм)
+
     fetch("/api/sync", {
       method: "POST",
       headers: {
@@ -482,10 +402,10 @@ export default function ObsHelper() {
       },
       body: JSON.stringify({
         type: "SHOW_HOST_NAME",
-        data: { 
-          text1: t1, 
-          text2: t2, 
-          settings: settings // Передаємо поточні налаштування
+        data: {
+          text1: t1,
+          text2: t2,
+          settings: settingsToUse
         },
         timestamp
       })
@@ -524,7 +444,7 @@ export default function ObsHelper() {
                   type: "SHOW_HOST_NAME",
                   text1: t1,
                   text2: t2,
-                  settings: settings,
+                  settings: settingsToUse,
                   timestamp: timestamp
                 }
               }
@@ -680,18 +600,15 @@ export default function ObsHelper() {
       return;
     }
     
-    // Якщо передано нові налаштування, застосовуємо їх
+    const t1 = inputText1.trim() || (newSettings?.text1) || settings.text1 || "";
+    const t2 = inputText2.trim() || (newSettings?.text2) || settings.text2 || "";
+
     if (newSettings) {
       handleSettingsChange(newSettings);
     }
-    
-    // Показуємо плашку з поточними налаштуваннями
-    const t1 = inputText1.trim() || settings.text1 || "";
-    const t2 = inputText2.trim() || settings.text2 || "";
-    
+
     if (t1 || t2) {
-      showHostName(t1, t2);
-      // Не скидаємо значення полів - вони залишаються для повторного використання
+      showHostName(t1, t2, newSettings || undefined);
     }
   };
 
@@ -700,6 +617,8 @@ export default function ObsHelper() {
       handleShowName();
     }
   };
+
+  const showDebug = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "1";
 
   return (
     <div
@@ -712,63 +631,43 @@ export default function ObsHelper() {
         overflow: "hidden"
       }}
     >
-      {/* Плашка - завжди видима в OBS */}
+      {/* Тільки плашка — більше нічого в OBS */}
       {isShowing && (text1 || text2) && (
-        <>
-          {console.log("🎯 Рендеримо плашку:", { isShowing, text1, text2, settings })}
-          <HostNameBar 
-            text1={text1} 
-            text2={text2} 
-            settings={settings}
-            onComplete={handleBarComplete} 
-          />
-        </>
+        <HostNameBar
+          text1={text1}
+          text2={text2}
+          settings={settings}
+          onComplete={handleBarComplete}
+        />
       )}
-      
-      {/* Тестовий елемент для перевірки */}
-      {isShowing && (
+
+      {/* Діагностика тільки за ?debug=1 в URL */}
+      {showDebug && (
         <div
           style={{
             position: "absolute",
-            top: "200px",
-            left: "100px",
-            padding: "20px",
-            backgroundColor: "red",
+            bottom: "10px",
+            left: "10px",
+            padding: "8px",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
             color: "white",
-            fontSize: "20px",
-            zIndex: 99999,
-            border: "5px solid yellow"
+            fontSize: "12px",
+            fontFamily: "monospace",
+            zIndex: 10000,
+            borderRadius: "4px",
+            border: "1px solid rgba(255, 255, 255, 0.3)"
           }}
         >
-          ТЕСТ: isShowing={isShowing ? "true" : "false"}, text1="{text1}", text2="{text2}"
+          <div>isShowing: {isShowing ? "✅ true" : "❌ false"}</div>
+          <div>text1: {text1 || "—"}</div>
+          <div>text2: {text2 || "—"}</div>
+          <div style={{ fontSize: "10px", opacity: 0.7, marginTop: "4px" }}>
+            {new Date().toLocaleTimeString()}
+          </div>
         </div>
       )}
-      
-      {/* Debug інформація (завжди видима для діагностики) */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "10px",
-          left: "10px",
-          padding: "8px",
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          color: "white",
-          fontSize: "12px",
-          fontFamily: "monospace",
-          zIndex: 10000,
-          borderRadius: "4px",
-          border: "1px solid rgba(255, 255, 255, 0.3)"
-        }}
-      >
-        <div>isShowing: {isShowing ? "✅ true" : "❌ false"}</div>
-        <div>text1: {text1 || "empty"}</div>
-        <div>text2: {text2 || "empty"}</div>
-        <div style={{ fontSize: "10px", opacity: 0.7, marginTop: "4px" }}>
-          {new Date().toLocaleTimeString()}
-        </div>
-      </div>
 
-      {/* Об'єднана панель управління (завжди видима, прихована тільки з ?control=false) */}
+      {/* Панель управління тільки при ?control=true */}
       {hasControlAccess && (
         <ControlPanel
           settings={previewSettings || settings}

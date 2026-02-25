@@ -23,7 +23,8 @@ if (!global.sharedSettings) {
     textPaddingRight: "0px",
     textGap: "4px",
     starPosition: "none",
-    starColor: "#731cfe"
+    starColor: "#731cfe",
+    badgeScale: 100
   };
 }
 

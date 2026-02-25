@@ -12,6 +12,67 @@ const ControlPanel = ({
   onKeyPress,
   onPreview
 }) => {
+  // Шаблони плашок (за твоїм HTML)
+  const BADGE_TEMPLATES = {
+    purple: {
+      badgeTemplate: "purple",
+      backgroundColor: "#7B2FBE",
+      text1Color: "#ffffff",
+      text2Color: "#e0c8ff",
+      text1Font: "'Montserrat', sans-serif",
+      text2Font: "'Montserrat', sans-serif",
+      text1Size: "26px",
+      text2Size: "12px",
+      text1LetterSpacing: "2px",
+      text2LetterSpacing: "0.3px",
+      text1TextTransform: "uppercase",
+      textGap: "4px",
+      textPaddingLeft: "24px",
+      textPaddingRight: "24px",
+      paddingTop: "10px",
+      paddingBottom: "10px",
+      width: "auto"
+    },
+    dark: {
+      badgeTemplate: "dark",
+      backgroundColor: "rgba(20, 20, 20, 0.85)",
+      text1Color: "#ffffff",
+      text2Color: "#cccccc",
+      text1Font: "'Montserrat', sans-serif",
+      text2Font: "'Montserrat', sans-serif",
+      text1Size: "26px",
+      text2Size: "12px",
+      text1LetterSpacing: "2px",
+      text2LetterSpacing: "0.3px",
+      text1TextTransform: "uppercase",
+      textGap: "4px",
+      textPaddingLeft: "24px",
+      textPaddingRight: "24px",
+      paddingTop: "10px",
+      paddingBottom: "10px",
+      width: "auto"
+    },
+    teal: {
+      badgeTemplate: "teal",
+      backgroundColor: "#1A5C7A",
+      text1Color: "#ffffff",
+      text2Color: "#a8dce8",
+      text1Font: "'Montserrat', sans-serif",
+      text2Font: "'Montserrat', sans-serif",
+      text1Size: "26px",
+      text2Size: "12px",
+      text1LetterSpacing: "2px",
+      text2LetterSpacing: "0.3px",
+      text1TextTransform: "uppercase",
+      textGap: "4px",
+      textPaddingLeft: "24px",
+      textPaddingRight: "24px",
+      paddingTop: "10px",
+      paddingBottom: "10px",
+      width: "auto"
+    }
+  };
+
   // Локальні стани для всіх налаштувань
   const [localSettings, setLocalSettings] = useState({
     backgroundColor: settings.backgroundColor || "#000000",
@@ -31,13 +92,21 @@ const ControlPanel = ({
     textPaddingRight: settings.textPaddingRight || "0px",
     textGap: settings.textGap || "4px",
     starPosition: settings.starPosition || "none",
-    starColor: settings.starColor || "#731cfe"
+    starColor: settings.starColor || "#731cfe",
+    badgeTemplate: settings.badgeTemplate || "custom",
+    badgeScale: settings.badgeScale ?? 100,
+    text1LetterSpacing: settings.text1LetterSpacing ?? "",
+    text2LetterSpacing: settings.text2LetterSpacing ?? "",
+    text1TextTransform: settings.text1TextTransform ?? "",
+    paddingTop: settings.paddingTop ?? "",
+    paddingBottom: settings.paddingBottom ?? ""
   });
 
   const [tempWidth, setTempWidth] = useState(settings.width || "auto");
   const [tempHeight, setTempHeight] = useState(settings.height || "auto");
   const [tempTopOffset, setTempTopOffset] = useState(settings.topOffset || "32px");
   const [tempBottomOffset, setTempBottomOffset] = useState(settings.bottomOffset || "32px");
+  const [extendedOpen, setExtendedOpen] = useState(false);
   const previewCanvasRef = useRef(null);
   const previewAnimationRef = useRef(null);
   const settingsRef = useRef(settings);
@@ -74,10 +143,10 @@ const ControlPanel = ({
 
   // Анімація зірочки для попереднього перегляду
   useEffect(() => {
-    const starPosition = settings.starPosition || localSettings.starPosition || "none";
-    const starColor = settings.starColor || localSettings.starColor || "#731cfe";
+    const hasStar = (settings.starPosition || localSettings.starPosition || "none") !== "none";
+    const starColorPreview = settings.starColor || localSettings.starColor || "#731cfe";
     
-    if (starPosition === "none" || !previewCanvasRef.current) {
+    if (!hasStar || !previewCanvasRef.current) {
       if (previewAnimationRef.current) {
         cancelAnimationFrame(previewAnimationRef.current);
       }
@@ -120,7 +189,7 @@ const ControlPanel = ({
       ctx.save();
       ctx.translate(starX, starY);
       ctx.rotate(rotation);
-      drawStar(ctx, 0, 0, starColor, 18);
+      drawStar(ctx, 0, 0, starColorPreview, 18);
       ctx.restore();
 
       previewAnimationRef.current = requestAnimationFrame(animate);
@@ -133,7 +202,12 @@ const ControlPanel = ({
         cancelAnimationFrame(previewAnimationRef.current);
       }
     };
-  }, [settings.starPosition, settings.starColor, localSettings.starPosition, localSettings.starColor]);
+  }, [settings.starPosition, localSettings.starPosition, settings.starColor, localSettings.starColor]);
+
+  const applyTemplate = (templateId) => {
+    if (!BADGE_TEMPLATES[templateId]) return;
+    setLocalSettings((prev) => ({ ...prev, ...BADGE_TEMPLATES[templateId] }));
+  };
 
   // Синхронізуємо локальні налаштування з пропсами тільки при першому монтуванні
   useEffect(() => {
@@ -156,7 +230,14 @@ const ControlPanel = ({
         textPaddingRight: settings.textPaddingRight || "0px",
         textGap: settings.textGap || "4px",
         starPosition: settings.starPosition || "none",
-        starColor: settings.starColor || "#731cfe"
+        starColor: settings.starColor || "#731cfe",
+        badgeTemplate: settings.badgeTemplate || "custom",
+        badgeScale: settings.badgeScale ?? 100,
+        text1LetterSpacing: settings.text1LetterSpacing ?? "",
+        text2LetterSpacing: settings.text2LetterSpacing ?? "",
+        text1TextTransform: settings.text1TextTransform ?? "",
+        paddingTop: settings.paddingTop ?? "",
+        paddingBottom: settings.paddingBottom ?? ""
       });
       setTempWidth(settings.width || "auto");
       setTempHeight(settings.height || "auto");
@@ -253,7 +334,14 @@ const ControlPanel = ({
       textPaddingRight: "0px",
       textGap: "4px",
       starPosition: "none",
-      starColor: "#731cfe"
+      starColor: "#731cfe",
+      badgeTemplate: "custom",
+      badgeScale: 100,
+      text1LetterSpacing: "",
+      text2LetterSpacing: "",
+      text1TextTransform: "",
+      paddingTop: "",
+      paddingBottom: ""
     });
   };
 
@@ -308,7 +396,350 @@ const ControlPanel = ({
           </p>
         </header>
 
-        {/* Основна сітка */}
+        {/* Основні налаштування */}
+        <div
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            borderRadius: "12px",
+            padding: "24px 30px",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            marginBottom: "20px"
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "row", gap: "32px", alignItems: "stretch", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "600px", flex: "1 1 300px" }}>
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Рядок 1</label>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+                <input
+                  type="text"
+                  value={inputText1}
+                  onChange={(e) => setInputText1(e.target.value)}
+                  onKeyPress={onKeyPress}
+                  placeholder={localSettings.text1 || "Введіть текст"}
+                  style={{
+                    flex: "1 1 200px",
+                    minWidth: "0",
+                    padding: "12px 14px",
+                    borderRadius: "8px",
+                    border: "2px solid rgba(255, 255, 255, 0.3)",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    color: "white",
+                    fontSize: "16px",
+                    fontFamily: "'Namu', 'Manrope', sans-serif",
+                    outline: "none"
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = "#731cfe")}
+                  onBlur={(e) => (e.target.style.borderColor = "rgba(255, 255, 255, 0.3)")}
+                />
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <span style={{ fontSize: "13px", opacity: 0.8 }}>Колір:</span>
+                  <input
+                    type="color"
+                    value={localSettings.text1Color}
+                    onChange={(e) => updateLocalSetting("text1Color", e.target.value)}
+                    style={{ width: "40px", height: "36px", border: "2px solid rgba(255,255,255,0.3)", borderRadius: "6px", cursor: "pointer" }}
+                  />
+                  <input
+                    type="text"
+                    value={localSettings.text1Color}
+                    onChange={(e) => updateLocalSetting("text1Color", e.target.value)}
+                    style={{
+                      width: "90px",
+                      padding: "8px 10px",
+                      borderRadius: "6px",
+                      border: "2px solid rgba(255, 255, 255, 0.3)",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      color: "white",
+                      fontSize: "13px",
+                      fontFamily: "monospace"
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Рядок 2</label>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+                <input
+                  type="text"
+                  value={inputText2}
+                  onChange={(e) => setInputText2(e.target.value)}
+                  onKeyPress={onKeyPress}
+                  placeholder={localSettings.text2 || "Введіть текст"}
+                  style={{
+                    flex: "1 1 200px",
+                    minWidth: "0",
+                    padding: "12px 14px",
+                    borderRadius: "8px",
+                    border: "2px solid rgba(255, 255, 255, 0.3)",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    color: "white",
+                    fontSize: "16px",
+                    fontFamily: "'Namu', 'Manrope', sans-serif",
+                    outline: "none"
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = "#731cfe")}
+                  onBlur={(e) => (e.target.style.borderColor = "rgba(255, 255, 255, 0.3)")}
+                />
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <span style={{ fontSize: "13px", opacity: 0.8 }}>Колір:</span>
+                  <input
+                    type="color"
+                    value={localSettings.text2Color}
+                    onChange={(e) => updateLocalSetting("text2Color", e.target.value)}
+                    style={{ width: "40px", height: "36px", border: "2px solid rgba(255,255,255,0.3)", borderRadius: "6px", cursor: "pointer" }}
+                  />
+                  <input
+                    type="text"
+                    value={localSettings.text2Color}
+                    onChange={(e) => updateLocalSetting("text2Color", e.target.value)}
+                    style={{
+                      width: "90px",
+                      padding: "8px 10px",
+                      borderRadius: "6px",
+                      border: "2px solid rgba(255, 255, 255, 0.3)",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      color: "white",
+                      fontSize: "13px",
+                      fontFamily: "monospace"
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Колір плашки</label>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                <input
+                  type="color"
+                  value={localSettings.backgroundColor}
+                  onChange={(e) => updateLocalSetting("backgroundColor", e.target.value)}
+                  style={{ width: "40px", height: "36px", border: "2px solid rgba(255,255,255,0.3)", borderRadius: "6px", cursor: "pointer" }}
+                />
+                <input
+                  type="text"
+                  value={localSettings.backgroundColor}
+                  onChange={(e) => updateLocalSetting("backgroundColor", e.target.value)}
+                  placeholder="#000000"
+                  style={{
+                    width: "90px",
+                    padding: "8px 10px",
+                    borderRadius: "6px",
+                    border: "2px solid rgba(255, 255, 255, 0.3)",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    color: "white",
+                    fontSize: "13px",
+                    fontFamily: "monospace"
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Шаблон плашки</label>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate("purple")}
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    border: "2px solid " + (localSettings.badgeTemplate === "purple" ? "#fff" : "rgba(255,255,255,0.3)"),
+                    background: "#7B2FBE",
+                    color: "#fff",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Шаблон 1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate("dark")}
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    border: "2px solid " + (localSettings.badgeTemplate === "dark" ? "#fff" : "rgba(255,255,255,0.3)"),
+                    background: "rgba(20, 20, 20, 0.95)",
+                    color: "#fff",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Шаблон 2
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate("teal")}
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    border: "2px solid " + (localSettings.badgeTemplate === "teal" ? "#fff" : "rgba(255,255,255,0.3)"),
+                    background: "#1A5C7A",
+                    color: "#fff",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Шаблон 3
+                </button>
+              </div>
+            </div>
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Сторона плашки</label>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  type="button"
+                  onClick={() => updateLocalSetting("side", "left")}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    border: "2px solid " + (localSettings.side === "left" ? "#731cfe" : "rgba(255,255,255,0.3)"),
+                    background: localSettings.side === "left" ? "rgba(115, 28, 254, 0.3)" : "transparent",
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Зліва
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateLocalSetting("side", "right")}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    border: "2px solid " + (localSettings.side === "right" ? "#731cfe" : "rgba(255,255,255,0.3)"),
+                    background: localSettings.side === "right" ? "rgba(115, 28, 254, 0.3)" : "transparent",
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Справа
+                </button>
+              </div>
+            </div>
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Зірочка</label>
+              <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  onClick={() => updateLocalSetting("starPosition", "none")}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    border: "2px solid " + (localSettings.starPosition === "none" ? "#731cfe" : "rgba(255,255,255,0.3)"),
+                    background: localSettings.starPosition === "none" ? "rgba(115, 28, 254, 0.3)" : "transparent",
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Ні
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateLocalSetting("starPosition", "corner")}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    border: "2px solid " + (localSettings.starPosition !== "none" ? "#731cfe" : "rgba(255,255,255,0.3)"),
+                    background: localSettings.starPosition !== "none" ? "rgba(115, 28, 254, 0.3)" : "transparent",
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Так
+                </button>
+                {localSettings.starPosition !== "none" && (
+                  <>
+                    <span style={{ fontSize: "13px", opacity: 0.8 }}>Колір:</span>
+                    <input
+                      type="color"
+                      value={localSettings.starColor || "#731cfe"}
+                      onChange={(e) => updateLocalSetting("starColor", e.target.value)}
+                      style={{ width: "40px", height: "36px", border: "2px solid rgba(255,255,255,0.3)", borderRadius: "6px", cursor: "pointer" }}
+                    />
+                    <input
+                      type="text"
+                      value={localSettings.starColor || "#731cfe"}
+                      onChange={(e) => updateLocalSetting("starColor", e.target.value)}
+                      style={{
+                        width: "90px",
+                        padding: "8px 10px",
+                        borderRadius: "6px",
+                        border: "2px solid rgba(255, 255, 255, 0.3)",
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        color: "white",
+                        fontSize: "13px",
+                        fontFamily: "monospace"
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: "100px", borderLeft: "1px solid rgba(255,255,255,0.15)", paddingLeft: "24px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff", textAlign: "center" }}>Масштаб плашки</label>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+                <input
+                  type="range"
+                  min={100}
+                  max={200}
+                  step={10}
+                  value={localSettings.badgeScale ?? 100}
+                  onChange={(e) => updateLocalSetting("badgeScale", Number(e.target.value))}
+                  style={{
+                    width: "120px",
+                    height: "8px",
+                    transform: "rotate(-90deg)",
+                    transformOrigin: "center center",
+                    margin: "0 -40px"
+                  }}
+                  title="100%–200%"
+                />
+                <span style={{ fontSize: "14px", fontWeight: 600, color: "rgba(255,255,255,0.9)", minWidth: "48px", textAlign: "center" }}>
+                  {localSettings.badgeScale ?? 100}%
+                </span>
+                <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", textAlign: "center" }}>100–200%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setExtendedOpen((v) => !v)}
+          style={{
+            width: "100%",
+            padding: "12px 20px",
+            marginBottom: "24px",
+            borderRadius: "8px",
+            border: "2px solid rgba(255, 255, 255, 0.2)",
+            backgroundColor: extendedOpen ? "rgba(115, 28, 254, 0.2)" : "transparent",
+            color: "white",
+            fontSize: "15px",
+            fontWeight: 600,
+            fontFamily: "'Namu', 'Manrope', sans-serif",
+            cursor: "pointer",
+            transition: "background-color 0.2s, border-color 0.2s"
+          }}
+        >
+          {extendedOpen ? "Згорнути розширені налаштування" : "Відкрити розширені налаштування"}
+        </button>
+
+        {extendedOpen && (
         <div
           style={{
             display: "grid",
@@ -317,7 +748,7 @@ const ControlPanel = ({
             marginBottom: "40px"
           }}
         >
-          {/* Ліва колонка - Текст та кольори */}
+          {/* Розширені: ліва колонка - текст, шрифти, зірочка, відступи */}
           <div
             style={{
               backgroundColor: "rgba(255, 255, 255, 0.05)",
@@ -328,85 +759,23 @@ const ControlPanel = ({
           >
             <h2
               style={{
-                fontSize: "24px",
+                fontSize: "20px",
                 fontWeight: "bold",
                 color: "#ff9800",
-                marginBottom: "30px",
+                marginBottom: "24px",
                 borderBottom: "2px solid rgba(255, 152, 0, 0.3)",
-                paddingBottom: "15px"
+                paddingBottom: "12px"
               }}
             >
-              Текст та кольори
+              Текст та кольори (розширені)
             </h2>
 
-            {/* Текст 1 */}
-            <div style={{ marginBottom: "30px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "12px",
-                  fontSize: "16px",
-                  fontWeight: 600,
-                  color: "#fff"
-                }}
-              >
-                Текст 1:
-              </label>
-              <input
-                type="text"
-                value={inputText1}
-                onChange={(e) => setInputText1(e.target.value)}
-                onKeyPress={onKeyPress}
-                placeholder={localSettings.text1 || "Введіть текст 1"}
-                style={{
-                  width: "100%",
-                  padding: "14px 16px",
-                  borderRadius: "8px",
-                  border: "2px solid rgba(255, 255, 255, 0.3)",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "'Namu', 'Manrope', sans-serif",
-                  outline: "none",
-                  transition: "border-color 0.3s"
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "#731cfe")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(255, 255, 255, 0.3)")}
-              />
-              <div style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "12px", flexWrap: "wrap" }}>
-                <label style={{ fontSize: "14px", opacity: 0.8, minWidth: "60px" }}>Колір:</label>
-                <input
-                  type="color"
-                  value={localSettings.text1Color}
-                  onChange={(e) => updateLocalSetting("text1Color", e.target.value)}
-                  style={{
-                    width: "60px",
-                    height: "40px",
-                    border: "2px solid rgba(255, 255, 255, 0.3)",
-                    borderRadius: "6px",
-                    cursor: "pointer"
-                  }}
-                />
-                <input
-                  type="text"
-                  value={localSettings.text1Color}
-                  onChange={(e) => updateLocalSetting("text1Color", e.target.value)}
-                  style={{
-                    flex: 1,
-                    minWidth: "120px",
-                    padding: "10px 12px",
-                    borderRadius: "6px",
-                    border: "2px solid rgba(255, 255, 255, 0.3)",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    color: "white",
-                    fontSize: "14px",
-                    fontFamily: "monospace"
-                  }}
-                />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "12px" }}>
+            {/* Текст 1 - шрифт і розмір */}
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Рядок 1 — шрифт і розмір</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "14px", opacity: 0.8, marginBottom: "8px" }}>Шрифт:</label>
+                  <label style={{ display: "block", fontSize: "12px", opacity: 0.8, marginBottom: "6px" }}>Шрифт</label>
                   <select
                     value={localSettings.text1Font || "'Namu', 'Manrope', sans-serif"}
                     onChange={(e) => updateLocalSetting("text1Font", e.target.value)}
@@ -418,7 +787,6 @@ const ControlPanel = ({
                       backgroundColor: "rgba(255, 255, 255, 0.1)",
                       color: "white",
                       fontSize: "14px",
-                      fontFamily: "'Namu', 'Manrope', sans-serif",
                       cursor: "pointer"
                     }}
                   >
@@ -434,7 +802,7 @@ const ControlPanel = ({
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "14px", opacity: 0.8, marginBottom: "8px" }}>Розмір:</label>
+                  <label style={{ display: "block", fontSize: "12px", opacity: 0.8, marginBottom: "6px" }}>Розмір</label>
                   <input
                     type="text"
                     value={localSettings.text1Size || "24px"}
@@ -454,75 +822,11 @@ const ControlPanel = ({
                 </div>
               </div>
             </div>
-
-            {/* Текст 2 */}
-            <div style={{ marginBottom: "30px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "12px",
-                  fontSize: "16px",
-                  fontWeight: 600,
-                  color: "#fff"
-                }}
-              >
-                Текст 2:
-              </label>
-              <input
-                type="text"
-                value={inputText2}
-                onChange={(e) => setInputText2(e.target.value)}
-                onKeyPress={onKeyPress}
-                placeholder={localSettings.text2 || "Введіть текст 2"}
-                style={{
-                  width: "100%",
-                  padding: "14px 16px",
-                  borderRadius: "8px",
-                  border: "2px solid rgba(255, 255, 255, 0.3)",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "'Namu', 'Manrope', sans-serif",
-                  outline: "none",
-                  transition: "border-color 0.3s"
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "#731cfe")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(255, 255, 255, 0.3)")}
-              />
-              <div style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "12px", flexWrap: "wrap" }}>
-                <label style={{ fontSize: "14px", opacity: 0.8, minWidth: "60px" }}>Колір:</label>
-                <input
-                  type="color"
-                  value={localSettings.text2Color}
-                  onChange={(e) => updateLocalSetting("text2Color", e.target.value)}
-                  style={{
-                    width: "60px",
-                    height: "40px",
-                    border: "2px solid rgba(255, 255, 255, 0.3)",
-                    borderRadius: "6px",
-                    cursor: "pointer"
-                  }}
-                />
-                <input
-                  type="text"
-                  value={localSettings.text2Color}
-                  onChange={(e) => updateLocalSetting("text2Color", e.target.value)}
-                  style={{
-                    flex: 1,
-                    minWidth: "120px",
-                    padding: "10px 12px",
-                    borderRadius: "6px",
-                    border: "2px solid rgba(255, 255, 255, 0.3)",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    color: "white",
-                    fontSize: "14px",
-                    fontFamily: "monospace"
-                  }}
-                />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "12px" }}>
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: 600, color: "#fff" }}>Рядок 2 — шрифт і розмір</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "14px", opacity: 0.8, marginBottom: "8px" }}>Шрифт:</label>
+                  <label style={{ display: "block", fontSize: "12px", opacity: 0.8, marginBottom: "6px" }}>Шрифт</label>
                   <select
                     value={localSettings.text2Font || "'Namu', 'Manrope', sans-serif"}
                     onChange={(e) => updateLocalSetting("text2Font", e.target.value)}
@@ -534,7 +838,6 @@ const ControlPanel = ({
                       backgroundColor: "rgba(255, 255, 255, 0.1)",
                       color: "white",
                       fontSize: "14px",
-                      fontFamily: "'Namu', 'Manrope', sans-serif",
                       cursor: "pointer"
                     }}
                   >
@@ -550,7 +853,7 @@ const ControlPanel = ({
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "14px", opacity: 0.8, marginBottom: "8px" }}>Розмір:</label>
+                  <label style={{ display: "block", fontSize: "12px", opacity: 0.8, marginBottom: "6px" }}>Розмір</label>
                   <input
                     type="text"
                     value={localSettings.text2Size || "20px"}
@@ -569,175 +872,6 @@ const ControlPanel = ({
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Колір фону */}
-            <div style={{ marginBottom: "30px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "12px",
-                  fontSize: "16px",
-                  fontWeight: 600,
-                  color: "#fff"
-                }}
-              >
-                Колір фону плашки:
-              </label>
-              <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                <input
-                  type="color"
-                  value={localSettings.backgroundColor}
-                  onChange={(e) => updateLocalSetting("backgroundColor", e.target.value)}
-                  style={{
-                    width: "60px",
-                    height: "40px",
-                    border: "2px solid rgba(255, 255, 255, 0.3)",
-                    borderRadius: "6px",
-                    cursor: "pointer"
-                  }}
-                />
-                <input
-                  type="text"
-                  value={localSettings.backgroundColor}
-                  onChange={(e) => updateLocalSetting("backgroundColor", e.target.value)}
-                  placeholder="#000000"
-                  style={{
-                    flex: 1,
-                    padding: "10px 12px",
-                    borderRadius: "6px",
-                    border: "2px solid rgba(255, 255, 255, 0.3)",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    color: "white",
-                    fontSize: "14px",
-                    fontFamily: "monospace"
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Зірочка */}
-            <div style={{ marginBottom: "30px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "12px",
-                  fontSize: "16px",
-                  fontWeight: 600,
-                  color: "#fff"
-                }}
-              >
-                Зірочка:
-              </label>
-              <div style={{ marginBottom: "12px" }}>
-                <label style={{ display: "block", fontSize: "14px", opacity: 0.8, marginBottom: "8px" }}>Позиція:</label>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <button
-                    onClick={() => updateLocalSetting("starPosition", "none")}
-                    style={{
-                      flex: 1,
-                      padding: "10px",
-                      borderRadius: "6px",
-                      border: "none",
-                      backgroundColor: localSettings.starPosition === "none" ? "#731cfe" : "rgba(115, 28, 254, 0.3)",
-                      color: "white",
-                      fontSize: "13px",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s, transform 0.2s"
-                    }}
-                    onMouseEnter={(e) => {
-                      if (localSettings.starPosition !== "none") e.target.style.transform = "scale(1.05)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = "scale(1)";
-                    }}
-                  >
-                    Відсутня
-                  </button>
-                  <button
-                    onClick={() => updateLocalSetting("starPosition", "outside")}
-                    style={{
-                      flex: 1,
-                      padding: "10px",
-                      borderRadius: "6px",
-                      border: "none",
-                      backgroundColor: localSettings.starPosition === "outside" ? "#731cfe" : "rgba(115, 28, 254, 0.3)",
-                      color: "white",
-                      fontSize: "13px",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s, transform 0.2s"
-                    }}
-                    onMouseEnter={(e) => {
-                      if (localSettings.starPosition !== "outside") e.target.style.transform = "scale(1.05)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = "scale(1)";
-                    }}
-                  >
-                    Зовні
-                  </button>
-                  <button
-                    onClick={() => updateLocalSetting("starPosition", "inside")}
-                    style={{
-                      flex: 1,
-                      padding: "10px",
-                      borderRadius: "6px",
-                      border: "none",
-                      backgroundColor: localSettings.starPosition === "inside" ? "#731cfe" : "rgba(115, 28, 254, 0.3)",
-                      color: "white",
-                      fontSize: "13px",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s, transform 0.2s"
-                    }}
-                    onMouseEnter={(e) => {
-                      if (localSettings.starPosition !== "inside") e.target.style.transform = "scale(1.05)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = "scale(1)";
-                    }}
-                  >
-                    Всередині
-                  </button>
-                </div>
-              </div>
-              {localSettings.starPosition !== "none" && (
-                <div>
-                  <label style={{ display: "block", fontSize: "14px", opacity: 0.8, marginBottom: "8px" }}>Колір зірки:</label>
-                  <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <input
-                      type="color"
-                      value={localSettings.starColor || "#731cfe"}
-                      onChange={(e) => updateLocalSetting("starColor", e.target.value)}
-                      style={{
-                        width: "60px",
-                        height: "40px",
-                        border: "2px solid rgba(255, 255, 255, 0.3)",
-                        borderRadius: "6px",
-                        cursor: "pointer"
-                      }}
-                    />
-                    <input
-                      type="text"
-                      value={localSettings.starColor || "#731cfe"}
-                      onChange={(e) => updateLocalSetting("starColor", e.target.value)}
-                      placeholder="#731cfe"
-                      style={{
-                        flex: 1,
-                        padding: "10px 12px",
-                        borderRadius: "6px",
-                        border: "2px solid rgba(255, 255, 255, 0.3)",
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        color: "white",
-                        fontSize: "14px",
-                        fontFamily: "monospace"
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Відступи тексту */}
@@ -836,69 +970,6 @@ const ControlPanel = ({
             >
               Позиціонування та розміри
             </h2>
-
-            {/* Сторона появи */}
-            <div style={{ marginBottom: "30px" }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "12px",
-                  fontSize: "16px",
-                  fontWeight: 600,
-                  color: "#fff"
-                }}
-              >
-                Сторона появи:
-              </label>
-              <div style={{ display: "flex", gap: "12px" }}>
-                <button
-                  onClick={() => updateLocalSetting("side", "left")}
-                  style={{
-                    flex: 1,
-                    padding: "14px",
-                    borderRadius: "8px",
-                    border: "none",
-                    backgroundColor: localSettings.side === "left" ? "#731cfe" : "rgba(115, 28, 254, 0.3)",
-                    color: "white",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    transition: "background-color 0.3s, transform 0.2s"
-                  }}
-                  onMouseEnter={(e) => {
-                    if (localSettings.side !== "left") e.target.style.transform = "scale(1.05)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = "scale(1)";
-                  }}
-                >
-                  Зліва
-                </button>
-                <button
-                  onClick={() => updateLocalSetting("side", "right")}
-                  style={{
-                    flex: 1,
-                    padding: "14px",
-                    borderRadius: "8px",
-                    border: "none",
-                    backgroundColor: localSettings.side === "right" ? "#731cfe" : "rgba(115, 28, 254, 0.3)",
-                    color: "white",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    transition: "background-color 0.3s, transform 0.2s"
-                  }}
-                  onMouseEnter={(e) => {
-                    if (localSettings.side !== "right") e.target.style.transform = "scale(1.05)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = "scale(1)";
-                  }}
-                >
-                  Справа
-                </button>
-              </div>
-            </div>
 
             {/* Вертикальне позиціонування */}
             <div style={{ marginBottom: "30px" }}>
@@ -1195,6 +1266,7 @@ const ControlPanel = ({
             </div>
           </div>
         </div>
+        )}
 
         {/* Попередній перегляд та кнопки */}
         <div
@@ -1233,38 +1305,20 @@ const ControlPanel = ({
               width: (settings.width || localSettings.width) === "auto" ? "auto" : (settings.width || localSettings.width),
               height: (settings.height || localSettings.height) === "auto" ? "auto" : (settings.height || localSettings.height),
               boxSizing: "border-box",
-              paddingRight: (settings.starPosition || localSettings.starPosition) === "outside" ? "60px" : "30px"
+              paddingRight: "30px"
             }}
           >
-            {/* Canvas для зірочки всередині попереднього перегляду */}
-            {(settings.starPosition || localSettings.starPosition) === "inside" && (
+            {/* Зірочка в куту попереднього перегляду (зліва/справа залежно від сторони плашки) */}
+            {(settings.starPosition || localSettings.starPosition) !== "none" && (
               <canvas
                 ref={previewCanvasRef}
                 style={{
                   position: "absolute",
-                  top: "10px",
-                  right: "10px",
                   width: "50px",
                   height: "50px",
-                  pointerEvents: "none",
-                  zIndex: 10
-                }}
-                width={100}
-                height={100}
-              />
-            )}
-            
-            {/* Canvas для зірочки зовні попереднього перегляду */}
-            {(settings.starPosition || localSettings.starPosition) === "outside" && (
-              <canvas
-                ref={previewCanvasRef}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "-25px",
-                  transform: "translateY(-50%)",
-                  width: "50px",
-                  height: "50px",
+                  ...((settings.side || localSettings.side) === "right"
+                    ? { left: 0, top: 0, transform: "translate(-50%, -50%)" }
+                    : { right: 0, top: 0, transform: "translate(50%, -50%)" }),
                   pointerEvents: "none",
                   zIndex: 10
                 }}
@@ -1278,7 +1332,10 @@ const ControlPanel = ({
                 style={{
                   color: settings.text1Color || localSettings.text1Color,
                   fontSize: settings.text1Size || localSettings.text1Size || "24px",
-                  fontWeight: "bold",
+                  fontWeight: "500",
+                  lineHeight: 1,
+                  letterSpacing: (settings.text1LetterSpacing ?? localSettings.text1LetterSpacing) || undefined,
+                  textTransform: (settings.text1TextTransform ?? localSettings.text1TextTransform) || undefined,
                   fontFamily: settings.text1Font || localSettings.text1Font || "'Namu', 'Manrope', sans-serif",
                   marginBottom: (inputText2 || (settings.text2 || localSettings.text2)) ? (settings.textGap || localSettings.textGap || "4px") : "0",
                   padding: `0 ${settings.textPaddingRight || localSettings.textPaddingRight || "0px"} 0 ${settings.textPaddingLeft || localSettings.textPaddingLeft || "0px"}`
@@ -1292,6 +1349,9 @@ const ControlPanel = ({
                 style={{
                   color: settings.text2Color || localSettings.text2Color,
                   fontSize: settings.text2Size || localSettings.text2Size || "20px",
+                  fontWeight: "400",
+                  lineHeight: 1,
+                  letterSpacing: (settings.text2LetterSpacing ?? localSettings.text2LetterSpacing) || undefined,
                   fontFamily: settings.text2Font || localSettings.text2Font || "'Namu', 'Manrope', sans-serif",
                   padding: `0 ${settings.textPaddingRight || localSettings.textPaddingRight || "0px"} 0 ${settings.textPaddingLeft || localSettings.textPaddingLeft || "0px"}`
                 }}
