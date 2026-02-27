@@ -356,7 +356,6 @@ export default function ConferenceLanding() {
           const speed = 0.25; // пікселів за кадр — дуже повільно
           const totalWidth = node.scrollWidth;
           if (totalWidth > 0) {
-            const singleSetWidth = totalWidth / 3;
             const current = node.scrollLeft;
 
             galleryIsProgrammaticRef.current = true;
