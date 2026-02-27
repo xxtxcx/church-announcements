@@ -3,7 +3,6 @@ import { ChevronDown, Calendar } from "lucide-react";
 import "../App.css";
 import "./ConferenceLanding.css";
 
-const PURPLE = "#731cfe";
 const FOOTER_BG = "#7926FF"; // як у Figma для футера та кнопок
 
 // Секції для навбару (порядок як на сторінці)
