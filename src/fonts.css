@@ -1,13 +1,26 @@
 @font-face {
   font-family: "Namu";
+  /* Очікуємо файл у src/fonts/Namu-1850.ttf */
   src: url("./fonts/Namu-1850.ttf") format("truetype");
   font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Аліас для ваги 900, щоб збігтися з Figma */
+@font-face {
+  font-family: "Namu";
+  src: url("./fonts/Namu-1850.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Namu";
+  /* Очікуємо файл у src/fonts/Namu-1990.ttf */
   src: url("./fonts/Namu-1990.ttf") format("truetype");
   font-weight: 400;
+  font-style: normal;
   font-display: swap;
 }

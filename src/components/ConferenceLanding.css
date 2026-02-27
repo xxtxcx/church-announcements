@@ -1,0 +1,583 @@
+/* Conference page — стилі з Figma (Version-2, 390px) */
+
+/* Контейнер сторінки: flex column, gap між секціями */
+.conference-page {
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: #202020;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 240px;
+  padding-bottom: 0;
+  box-sizing: border-box;
+}
+
+/* Контент обмежений шириною як у макеті */
+.conference-content {
+  width: 100%;
+  max-width: 390px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  gap: 240px;
+}
+
+/* === ТИПОГРАФІКА FIGMA === */
+/* NAMU weight 900 у Figma → в проєкті є 800 (Namu-1850.ttf) і 400 (Namu-1990.ttf); використовуємо 800 */
+.conference-font-namu {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.conference-font-inter {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Header: Power Place — NAMU 900, 84px, 80%, uppercase, letter-spacing -0.07em */
+.conference-hero-title {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 84px;
+  line-height: 80%;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: -0.07em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+/* Трохи вільніше літерспейсінг для слова PLACE у хедері */
+.conference-hero-place {
+  letter-spacing: 0.08em;
+}
+
+/* палай / зростай — Inter 400, 34px, 41px */
+.conference-hero-sub {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 41px;
+  color: #ffffff;
+}
+
+/* Кнопка "Зареєструватись" — NAMU 900, 24px, 29px, uppercase */
+.conference-btn-text {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 29px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* Слова-цінності (любов, Спільність, тощо) — NAMU 900, 71px, 95%, uppercase */
+.conference-words-title {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 71px;
+  line-height: 95%;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* Розклад: підпис — NAMU 900, 24px, 29px, center */
+.conference-schedule-label {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Розклад: час — NAMU 900, 104px, 125px */
+.conference-schedule-time {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 104px;
+  line-height: 125px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Розклад: перемикач днів П'ятниця / Субота */
+.conference-schedule-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.conference-schedule-tab {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.conference-schedule-tab:hover {
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.conference-schedule-tab.active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+/* Спікери: біо — NAMU 900, 18px, 22px, justify */
+.conference-speaker-bio {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: justify;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Спікери: ім'я по дузі навколо фото */
+.conference-speaker-name {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: #ffffff;
+}
+
+/* Форма: плейсхолдери/лейбли — Inter 400, 14px, 17px */
+.conference-form-label,
+.conference-form-input {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Поле форми: бордер одна цілісна рамка, підпис всередині лінії (на верхньому краї) */
+.conference-field {
+  position: relative;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 43px;
+  background: transparent;
+  padding: 14px 16px 12px;
+  box-sizing: border-box;
+}
+
+/* Підпис сидить на верхній лінії поля: по центру, фон обрізає бордер */
+.conference-field-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0 10px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: #202020;
+  pointer-events: none;
+}
+
+.conference-field input,
+.conference-field select {
+  display: block;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #fff;
+  padding: 0;
+}
+
+.conference-field input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.conference-field select {
+  cursor: pointer;
+  appearance: none;
+}
+
+.conference-field select option {
+  background: #202020;
+  color: #fff;
+}
+
+.conference-field:focus-within {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Поля з іконкою справа — відступ, щоб текст не заходив під іконку */
+.conference-field .relative input.pr-10,
+.conference-field .relative select {
+  padding-right: 2.5rem;
+}
+
+/* Кнопка форми "Зареєструватись" — NAMU 900, 20px, 24px, uppercase */
+.conference-form-btn-text {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 24px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* FAQ — NAMU 900, 24px, 29px, letter-spacing 0 */
+.conference-faq-title {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* === FOOTER — на всю ширину екрану === */
+.conference-footer {
+  width: 100%;
+  min-height: 570px;
+  background: #7926ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 54px 20px 40px;
+  box-sizing: border-box;
+}
+
+.conference-footer-inner {
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Футер: Power — NAMU 900, 84px, 80%, letter-spacing -0.07em, uppercase */
+.conference-footer-logo {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 84px;
+  line-height: 80%;
+  letter-spacing: -0.07em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* Футер: Place — окремо 90% line-height як у Figma */
+.conference-footer-logo-place {
+  line-height: 90%;
+}
+
+/* Контакт: ім'я — NAMU 900, 18px, 22px */
+.conference-footer-contact-name {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 22px;
+  color: #ffffff;
+}
+
+/* Контакт: телефон — NAMU 900, 51px, 61px, justify */
+.conference-footer-phone {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 51px;
+  line-height: 61px;
+  text-align: justify;
+  color: #ffffff;
+}
+
+/* Контакт: адреса — NAMU 900, 23.65px, 28px, justify */
+.conference-footer-address {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 23.6529px;
+  line-height: 28px;
+  text-align: justify;
+  color: #ffffff;
+}
+
+/* Будеш? — NAMU 900, 71px, 95%, center, uppercase */
+.conference-registration-title {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 71px;
+  line-height: 95%;
+  text-align: center;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* Поля форми з Figma: border 1px solid #fff, border-radius 43px, bg #202020 */
+.conference-input-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 350px;
+  min-height: 49px;
+  padding: 16px;
+  background: #202020;
+  border: 1px solid #ffffff;
+  border-radius: 43px;
+}
+
+.conference-input-wrap input,
+.conference-input-wrap select {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #ffffff;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.conference-input-wrap input::placeholder,
+.conference-input-wrap select option {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Nav bar — NAMU 900, 14px, 17px, uppercase */
+.conference-nav-bar {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 17px;
+  text-transform: uppercase;
+}
+
+/* Нижній навбар-карусель: горизонтальний скрол вліво/вправо */
+.conference-nav-carousel {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
+
+.conference-nav-carousel-inner {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  padding-right: 1rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.conference-nav-carousel-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.conference-nav-carousel-inner a {
+  scroll-snap-align: center;
+}
+
+/* Блок контактів — футер на всю ширину і до низу */
+.conference-footer-full {
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* Футер: контейнер з Figma — flex column, center, padding 0, gap */
+.conference-footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  gap: 40px;
+}
+
+.conference-footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 350px;
+  padding: 54px 16px 0;
+  gap: 20px;
+}
+
+.conference-footer-logo-img {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  object-fit: contain;
+}
+
+.conference-footer-contacts {
+  margin-top: 0;
+}
+
+/* Блок "Любов" — full-bleed без бокових відступів */
+.conference-values-fullbleed {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
+
+/* Фотогалерея: коло з фото поверх блоку "Любов" */
+.conference-gallery-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+  transform: translateY(20px);
+}
+
+.conference-gallery-carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 24px;
+  padding: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  pointer-events: auto;
+}
+
+.conference-gallery-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.conference-gallery-item {
+  flex-shrink: 0;
+  width: 320px;
+  height: 320px;
+  border-radius: 9999px;
+  overflow: hidden;
+  scroll-snap-align: center;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+}
+
+.conference-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 480px) {
+  .conference-gallery-item {
+    width: 360px;
+    height: 360px;
+  }
+}
+
+/* Попап після успішної реєстрації */
+.conference-success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  animation: conference-success-fadeIn 0.25s ease-out;
+}
+
+@keyframes conference-success-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.conference-success-popup {
+  background: #7926ff;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: conference-success-popIn 0.3s ease-out;
+}
+
+@keyframes conference-success-popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.conference-success-title {
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0 0 0.5rem;
+}
+
+.conference-success-text {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  color: #fff;
+  margin: 0 0 1.5rem;
+}
+
+.conference-success-close {
+  display: block;
+  width: 100%;
+  padding: 14px 24px;
+  background: #fff;
+  color: #7926ff;
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.conference-success-close:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
+}
+
+.conference-success-close:active {
+  transform: scale(0.98);
+}

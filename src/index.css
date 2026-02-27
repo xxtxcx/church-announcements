@@ -1,3 +1,22 @@
+@import "./fonts.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Прозорий фон для OBS overlay */
+body {
+  background-color: transparent !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#root {
+  background-color: transparent !important;
+}
+
+@keyframes starRotate {
+  from { transform: rotate(7deg); }
+  to { transform: rotate(367deg); }
+}
