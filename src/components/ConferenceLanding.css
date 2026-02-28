@@ -297,6 +297,15 @@
   font-weight: 400 !important;
 }
 
+.conference-faq-answer .conference-faq-link {
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.conference-faq-answer .conference-faq-link:hover {
+  color: #fff;
+}
+
 /* === FOOTER — на всю ширину екрану === */
 .conference-footer {
   width: 100%;
@@ -599,6 +608,35 @@
   font-size: 1rem;
   color: #fff;
   margin: 0 0 1.5rem;
+}
+
+.conference-success-hint {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+}
+
+.conference-success-pay {
+  display: block;
+  width: 100%;
+  padding: 12px 24px;
+  margin-bottom: 0.5rem;
+  background: #7926ff;
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  font-family: "Namu", "NAMU", sans-serif;
+  font-weight: 800;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.conference-success-pay:hover {
+  opacity: 0.95;
+  color: #fff;
 }
 
 .conference-success-close {

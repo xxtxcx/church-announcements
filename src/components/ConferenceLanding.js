@@ -4,6 +4,7 @@ import "../App.css";
 import "./ConferenceLanding.css";
 
 const FOOTER_BG = "#7926FF"; // як у Figma для футера та кнопок
+const MONOBANK_JAR_URL = "https://send.monobank.ua/jar/9HKpA3Sjge";
 
 // Google Form: Power Place реєстрація. Усі питання — «Коротка відповідь», включно з датою народження.
 const GOOGLE_FORM = {
@@ -29,12 +30,12 @@ const MINISTRY_LABELS = {
 
 const FORMAT_LABELS = {
   "": "—",
-  "fri-no": "П'ятниця, без обіду — 300 грн",
-  "sat-no": "Субота, без обіду — 300 грн",
-  "fri-sat-no": "П'ятниця + Субота, без обідів — 500 грн",
-  "fri-lunch": "П'ятниця, з обідом — 800 грн",
-  "sat-lunch": "Субота, з обідом — 800 грн",
-  "fri-sat-lunch": "П'ятниця + Субота, з обідами — 1100 грн"
+  "fri-no": "П'ятниця, без обіду - 300 грн",
+  "sat-no": "Субота, без обіду - 300 грн",
+  "fri-sat-no": "П'ятниця + Субота, без обідів - 500 грн",
+  "fri-lunch": "П'ятниця, з обідом - 600 грн",
+  "sat-lunch": "Субота, з обідом - 600 грн",
+  "fri-sat-lunch": "П'ятниця + Субота, з обідами - 1100 грн"
 };
 
 // Фрази замість «Please fill out this field» — нагадування в контексті конференції
@@ -42,12 +43,12 @@ const VALIDATION_PHRASES = [
   "Ти ж з нами? Напиши хоч як звуть і номер :)",
   "Без тебе не зберуть список - заповни, будь ласка",
   "Power Place потребує твоєї відповіді тут",
-  "Хочемо знати, хто приходить — дай знати",
-  "Йоу, заповни це — ми ж маємо сконтактувати",
-  "Не залишай порожнім — як ми тебе знайдемо?",
+  "Хочемо знати, хто приходить - дай знати",
+  "Йоу, заповни це - ми ж маємо сконтактувати",
+  "Не залишай порожнім - як ми тебе знайдемо?",
   "Це обов'язкове: тоді точно будеш у списку",
   "Реєстрація = твої дані тут. Заповни, пліз!",
-  "Поле чекає на тебе — палай, заповняй",
+  "Поле чекає на тебе - палай, заповняй",
   "Зростай у вірності: почни з цього поля"
 ];
 
@@ -188,7 +189,7 @@ const SPEAKERS = [
   },
   {
     name: "ВОЛОДИМИР БІЛИК",
-    bio: "У 2015-му прийняв одну з найстаріших харизматичних церков Львова і повів її далі. Знає, що будувати — це не про натхнення, а про рішення. Поговоримо про ідентичність лідера.",
+    bio: "У 2015-му прийняв одну з найстаріших харизматичних церков Львова і повів її далі. Знає, що будувати - це не про натхнення, а про рішення. Поговоримо про ідентичність лідера.",
     image: "/assets/speakers/volodymyr-bilyk.jpg",
     nameSvg: "/assets/speakers/bilyk.svg",
     nameSvgWidth: "16rem",
@@ -250,15 +251,32 @@ const SCHEDULE_DAYS = [
 const FAQ_ITEMS = [
   {
     q: "Коли і де?",
-    a: "24 квітня — старт дводенної конференції Power Place. Місце: Львів, вул. Замарстинівська, 37."
+    a: "24 квітня - старт дводенної конференції Power Place. Місце: Львів, вул. Замарстинівська, 37."
   },
   {
     q: "Скільки коштує участь?",
-    a: "Вартість залежить від формату: П'ятниця, без обіду — 300 грн. Субота, без обіду — 300 грн. П'ятниця + Субота, без обідів — 500 грн. П'ятниця, з обідом — 800 грн. Субота, з обідом — 800 грн. П'ятниця + Субота, з обідами — 1100 грн."
+    a: "Вартість залежить від формату: П'ятниця, без обіду - 300 грн. Субота, без обіду - 300 грн. П'ятниця + Субота, без обідів - 500 грн. П'ятниця, з обідом - 600 грн. Субота, з обідом - 600 грн. П'ятниця + Субота, з обідами - 1100 грн."
   },
   {
     q: "Як зареєструватися?",
     a: "Заповніть форму вище та натисніть «Зареєструватись». Ми зв’яжемося з вами для підтвердження."
+  },
+  {
+    q: "Як оплатити?",
+    a: (
+      <>
+        Оплатити участь можна за посиланням:{" "}
+        <a
+          href={MONOBANK_JAR_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="conference-faq-link"
+        >
+          Monobank (банка)
+        </a>
+        . У коментарі до платежу обовʼязково вкажи ПІП, під яким зареєструвався/зареєструвалася — щоб ми могли ідентифікувати оплату.
+      </>
+    )
   },
   {
     q: "Я з іншого міста, де зупинитися?",
@@ -946,17 +964,17 @@ export default function ConferenceLanding() {
                   }
                 >
                   <option value="">Обрати</option>
-                  <option value="fri-no">П'ятниця, без обіду — 300 грн</option>
-                  <option value="sat-no">Субота, без обіду — 300 грн</option>
-                  <option value="fri-sat-no">П'ятниця + Субота, без обідів — 500 грн</option>
-                  <option value="fri-lunch">П'ятниця, з обідом — 800 грн</option>
-                  <option value="sat-lunch">Субота, з обідом — 800 грн</option>
-                  <option value="fri-sat-lunch">П'ятниця + Субота, з обідами — 1100 грн</option>
+                  <option value="fri-no">П'ятниця, без обіду - 300 грн</option>
+                  <option value="sat-no">Субота, без обіду - 300 грн</option>
+                  <option value="fri-sat-no">П'ятниця + Субота, без обідів - 500 грн</option>
+                  <option value="fri-lunch">П'ятниця, з обідом - 600 грн</option>
+                  <option value="sat-lunch">Субота, з обідом - 600 грн</option>
+                  <option value="fri-sat-lunch">П'ятниця + Субота, з обідами - 1100 грн</option>
                 </select>
                 <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
               </div>
             </div>
-            <div className="flex justify-center pt-1">
+            <div className="flex flex-col items-center gap-3 pt-1">
               <button
                 type="submit"
                 className="conference-form-btn-text w-full max-w-[350px] h-12 rounded-[147px] uppercase text-white hover:opacity-95 transition-opacity flex items-center justify-center"
@@ -964,6 +982,14 @@ export default function ConferenceLanding() {
               >
                 Зареєструватись
               </button>
+              <a
+                href={MONOBANK_JAR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/80 hover:text-white underline underline-offset-2"
+              >
+                Оплатити участь (Monobank)
+              </a>
             </div>
           </form>
         </section>
@@ -974,6 +1000,17 @@ export default function ConferenceLanding() {
             <div className="conference-success-popup">
               <h2 id="success-title" className="conference-success-title">ТИ З НАМИ!</h2>
               <p className="conference-success-text">З тобою сконтактують=)</p>
+              <p className="conference-success-text conference-success-hint">
+                У коментарі до платежу обовʼязково вкажи ПІП, під яким зареєструвався/зареєструвалася - щоб ми могли ідентифікувати оплату.
+              </p>
+              <a
+                href={MONOBANK_JAR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="conference-success-pay"
+              >
+                Оплатити участь
+              </a>
               <button
                 type="button"
                 className="conference-success-close"
