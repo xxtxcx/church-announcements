@@ -84,7 +84,7 @@ function toDateDDMMYYYY(value) {
 
 // Секції для навбару (порядок як на сторінці)
 const NAV_SECTIONS = [
-  { id: "values", label: "Фотогалерея" },
+  { id: "values", label: "Як це було" },
   { id: "schedule", label: "Розклад" },
   { id: "speakers", label: "Спікери" },
   { id: "registration", label: "Реєстрація" },
@@ -137,16 +137,15 @@ const grainStyle = {
 
 function BottomNavPill({ href, children, active = false, pillRef, onClick }) {
   const base =
-    "whitespace-nowrap px-5 py-2 rounded-full text-xs font-normal uppercase tracking-[0.12em] border transition-colors conference-font-namu flex-shrink-0";
-  const palette = active
-    ? "bg-white text-black border-white"
-    : "bg-black text-white border-white";
+    "whitespace-nowrap px-5 py-2.5 rounded-[147px] text-sm font-bold uppercase tracking-[0.12em] transition-colors conference-font-namu flex-shrink-0";
+  const activeClass = "bg-white text-black border-2 border-white";
+  const inactiveClass = "bg-transparent text-white border border-white";
 
   return (
     <a
       ref={pillRef}
       href={href}
-      className={`${base} ${palette}`}
+      className={`${base} ${active ? activeClass : inactiveClass}`}
       onClick={onClick}
     >
       {children}
@@ -301,6 +300,7 @@ export default function ConferenceLanding() {
   });
 
   const navScrollRef = useRef(null);
+  const footerRef = useRef(null);
   const pillRefs = useRef({});
   const isScrollingFromClick = useRef(false);
   const galleryScrollRef = useRef(null);
@@ -597,7 +597,7 @@ export default function ConferenceLanding() {
 
   return (
     <div
-      className="conference-page min-h-screen text-white overflow-x-hidden overflow-y-auto h-screen"
+      className="conference-page text-white overflow-x-hidden overflow-y-auto"
       style={grainStyle}
     >
       {/* Одна зірка: поза оверлеєм, щоб не зникала разом із ним; інтерактивна */}
@@ -671,7 +671,7 @@ export default function ConferenceLanding() {
 
       <div className="max-w-[390px] mx-auto w-full px-4 sm:px-6 relative pb-24">
         {/* ========== HEADER / HERO — все видно одразу; під час інтро ховаємо кнопку, палай/зростай до своїх моментів */}
-        <header className="relative w-full flex flex-col justify-between min-h-[calc(100vh-77px)]">
+        <header className="conference-hero relative w-full flex flex-col justify-between">
           <div className="flex flex-col items-center pt-24">
             <h1 className="conference-hero-title uppercase text-white">
               Power
@@ -699,7 +699,7 @@ export default function ConferenceLanding() {
         {/* ========== VALUES (ЛЮБОВ + ФОТОГАЛЕРЕЯ-КАРУСЕЛЬ) ========== */}
         <section
           id="values"
-          className="conference-values-fullbleed relative py-10 overflow-hidden min-h-[460px]"
+          className="conference-values-fullbleed relative py-20 overflow-hidden min-h-[460px]"
         >
           <div className="relative">
             {/* Слова-цінності як фон; ЛЮБОВ не показуємо на початку (під час інтро) */}
@@ -735,6 +735,7 @@ export default function ConferenceLanding() {
                     <img
                       src={src}
                       alt={`Power Place фото ${index + 1}`}
+                      loading="lazy"
                     />
                   </div>
                 ))}
@@ -744,7 +745,7 @@ export default function ConferenceLanding() {
         </section>
 
         {/* ========== Розклад ========== */}
-        <section id="schedule" className="py-10 px-4 flex flex-col items-center gap-[50px]">
+        <section id="schedule" className="py-20 px-4 flex flex-col items-center gap-[50px]">
           <div className="conference-schedule-tabs">
             {SCHEDULE_DAYS.map(({ day }, i) => (
               <button
@@ -772,7 +773,7 @@ export default function ConferenceLanding() {
         </section>
 
         {/* ========== SPEAKERS ========== */}
-        <section id="speakers" className="py-10">
+        <section id="speakers" className="py-20">
           <ul className="space-y-10">
             {SPEAKERS.map((s, i) => (
               <li key={i} className="flex flex-col items-center pt-8">
@@ -783,6 +784,7 @@ export default function ConferenceLanding() {
                         src={s.image}
                         alt={s.name}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-4xl text-white/50 bg-white/15">
@@ -795,6 +797,7 @@ export default function ConferenceLanding() {
                     <img
                       src={s.nameSvg}
                       alt={s.name}
+                      loading="lazy"
                       style={{
                         width: s.nameSvgWidth || "11rem",
                         maxWidth: "none",
@@ -837,7 +840,7 @@ export default function ConferenceLanding() {
         </section>
 
         {/* ========== REGISTRATION ========== */}
-        <section id="registration" className="py-10">
+        <section id="registration" className="py-20">
           <h2 className="conference-registration-title uppercase text-center text-white mb-6 w-full">
             Будеш?
           </h2>
@@ -975,7 +978,7 @@ export default function ConferenceLanding() {
         )}
 
         {/* ========== FAQ ========== */}
-        <section id="faq" className="py-10">
+        <section id="faq" className="py-20">
           {FAQ_ITEMS.map((item, i) => (
             <AccordionItem
               key={i}
@@ -991,8 +994,10 @@ export default function ConferenceLanding() {
 
       {/* ========== КОНТАКТИ / FOOTER — svg-макет ========== */}
       <footer
+        ref={footerRef}
         id="contacts"
-        className="w-full text-white overflow-hidden min-h-[425px] pb-[6rem]"
+        className="w-full text-white overflow-hidden min-h-[425px] pb-32"
+        style={{ backgroundColor: FOOTER_BG }}
       >
         <picture>
           <source
@@ -1003,19 +1008,21 @@ export default function ConferenceLanding() {
             src="/assets/footer-conference.svg"
             alt="Power Place контакти"
             className="w-full h-auto block"
+            loading="lazy"
           />
         </picture>
       </footer>
 
-      {/* Нижній навбар — майже одразу після «зростай» (крок 6) */}
+      {/* Нижній навбар — ховається біля футера; пілюля з обводкою */}
       {(!showIntro || introStep >= 6) && (
         <nav
           ref={navScrollRef}
-          className="conference-nav-carousel fixed bottom-0 left-0 right-0 w-full min-w-0 h-[77px] bg-black flex items-center z-30"
+          className="conference-nav-carousel fixed bottom-0 left-0 right-0 w-full flex justify-center px-4 pb-4 z-30 transition-opacity duration-300"
           aria-label="Навігація по секціях"
         >
-          <div className="flex items-center gap-3 px-4 sm:px-5 overflow-x-auto overflow-y-hidden w-full scrollbar-hide conference-nav-carousel-inner">
-            {NAV_SECTIONS.map(({ id, label }) => (
+          <div className="conference-nav-pill flex items-center min-h-[77px] max-w-[calc(100vw-2rem)] w-full rounded-[147px] border-2 border-white overflow-hidden" style={grainStyle}>
+            <div className="flex items-center gap-3 px-4 sm:px-5 overflow-x-auto overflow-y-hidden w-full min-w-0 scrollbar-hide conference-nav-carousel-inner">
+              {NAV_SECTIONS.map(({ id, label }) => (
               <BottomNavPill
                 key={id}
                 href={`#${id}`}
@@ -1027,7 +1034,8 @@ export default function ConferenceLanding() {
               >
                 {label}
               </BottomNavPill>
-            ))}
+              ))}
+            </div>
           </div>
         </nav>
       )}

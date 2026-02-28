@@ -13,6 +13,24 @@
   gap: 240px;
   padding-bottom: 0;
   box-sizing: border-box;
+  /* viewport: на мобільних 100svh краще за 100vh (не ховає контент під UI/навбар); fallback — 100vh */
+  min-height: 100vh;
+  height: 100vh;
+}
+@supports (height: 100svh) {
+  .conference-page {
+    min-height: 100svh;
+    height: 100svh;
+  }
+}
+
+.conference-hero {
+  min-height: calc(100vh - 77px);
+}
+@supports (height: 100svh) {
+  .conference-hero {
+    min-height: calc(100svh - 77px);
+  }
 }
 
 /* Контент обмежений шириною як у макеті */
@@ -376,7 +394,12 @@
   text-transform: uppercase;
 }
 
-/* Нижній навбар-карусель: горизонтальний скрол вліво/вправо */
+/* Нижній навбар: зовнішня пілюля (прозора, тільки обводка), всередині — пілюлі пунктів */
+.conference-nav-pill {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
+
 .conference-nav-carousel {
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
