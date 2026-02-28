@@ -29,9 +29,12 @@ const MINISTRY_LABELS = {
 
 const FORMAT_LABELS = {
   "": "—",
-  "fri-no-lunch": "П'ятниця (без обіду) — 300 грн",
-  "fri-lunch": "П'ятниця (з обідом) — 400 грн",
-  full: "Повний формат — уточнюйте"
+  "fri-no": "П'ятниця, без обіду — 300 грн",
+  "sat-no": "Субота, без обіду — 300 грн",
+  "fri-sat-no": "П'ятниця + Субота, без обідів — 500 грн",
+  "fri-lunch": "П'ятниця, з обідом — 800 грн",
+  "sat-lunch": "Субота, з обідом — 800 грн",
+  "fri-sat-lunch": "П'ятниця + Субота, з обідами — 1100 грн"
 };
 
 // Фрази замість «Please fill out this field» — нагадування в контексті конференції
@@ -114,16 +117,15 @@ const GALLERY_IMAGES = [
   "/assets/1b777a7bead9c05e127dc78d1bb54c6b9b52afd2.jpg"
 ];
 
-// Таймлайн інтро (мс): зірка + ісус одночасно → Power Place → полум'я → палай → head → зростай → кінець
+// Таймлайн інтро (мс): зірка + ісус → Power Place → полум'я → палай → head 1,5 с → ховаємо head → кінець
 const INTRO_DURATION_STAR = 1200;
 const INTRO_DURATION_JESUS_IN = 1000;
 const INTRO_DURATION_POWER_PLACE = 1200;
-const INTRO_DURATION_FLAME_IN = 2800;
+const INTRO_DURATION_FLAME_IN = 1600;
 const INTRO_DURATION_FLAME_OUT = 600;
 const INTRO_DURATION_PALAI = 1000;
-const INTRO_DURATION_HEAD_IN = 3000;
-const INTRO_DURATION_HEAD_OUT = 600;
-const INTRO_DURATION_ZROSTAI = 1000;
+const INTRO_DURATION_HEAD_VISIBLE = 1500;
+const INTRO_DURATION_HEAD_EXIT_MS = 840;
 const INTRO_DURATION_FINAL = 800;
 
 // Фон з легким зерном (текстура)
@@ -167,10 +169,7 @@ function AccordionItem({ title, children, open, onToggle }) {
         />
       </button>
       {open && (
-        <div
-          className="pb-4 text-white/80 text-sm leading-relaxed"
-          style={{ fontFamily: "'Namu', sans-serif" }}
-        >
+        <div className="conference-faq-answer pb-4 text-white/80 text-sm leading-relaxed">
           {children}
         </div>
       )}
@@ -181,7 +180,7 @@ function AccordionItem({ title, children, open, onToggle }) {
 const SPEAKERS = [
   {
     name: "МИКОЛА САВЧУК",
-    bio: "Єпископ, якому є що розказати про особисті чудеса і ріст — і він не соромиться говорити прямо. На Power Place поділиться тим, як євангелізм стає не програмою, а способом жити.",
+    bio: "Єпископ, пастор та служитель Об'єднання церков «Спасіння» у м. Вишневе Київської області. Народився в невіруючій сім'ї, але у віці 10 років пережив чудесне зцілення туберкульозу кісток, про що свідчить скрізь, де проповідує. У служінні він особливо фокусується на розвитку домашніх груп, євангелізації, менторстві та підтримці молоді. На конференції Power Place ділитиметься тим, як євангелізація стає не програмою, а способом життя.",
     image: "/assets/speakers/mykola-savchuk.png",
     nameSvg: "/assets/speakers/savchuk.svg",
     nameSvgWidth: "16rem",
@@ -198,7 +197,7 @@ const SPEAKERS = [
   },
   {
     name: "ІГОР НОВОСЕЛЬЦЕВ",
-    bio: "Молодіжний пастор, який говорить із молоддю — не до молоді. Якщо ти думав, що служіння це важко і нудно, він змінить твою думку за перші п'ять хвилин.",
+    bio: "Молодіжний пастор, який надихає молодь служити та впливати на покоління. Володіє особливим даром віри, який запалює серця і надихає на сміливі кроки у служінні та житті. Ігор є яскравим прикладом сімейних цінностей: разом з дружиною Оленою вони усиновили трьох дітей, даруючи їм любов і турботу. Його життя – поєднання віри, щедрості та великого серця, що мотивує кожного діяти і творити зміни.",
     image: "/assets/speakers/ihor-novoseltsev.jpg",
     nameSvg: "/assets/speakers/novoselcev.svg",
     nameSvgWidth: "15rem",
@@ -207,7 +206,7 @@ const SPEAKERS = [
   },
   {
     name: "ТОБІАС ТОТ",
-    bio: "Будує церкву одночасно в Будапешті і Словаччині. Привезе погляд на першу любов і лідерство з зовсім іншого контексту — і це буде саме те, чого не вистачало.",
+    bio: "Молодіжний пастор церкви Equippers Budapest. Він живе, щоб збудовувати лідерів, допомагати людям ставати учнями та бачити церкви повними молоді, що горить та слідує за Ісусом. Торік вже був на Power Place і залишив слово, яке досі резонує. Цього року чекаємо ще більшого.",
     image: "/assets/speakers/tobias-tot.jpg",
     nameSvg: "/assets/speakers/Tobias.svg",
     nameSvgWidth: "11rem"
@@ -218,14 +217,14 @@ const SCHEDULE_DAYS = [
   {
     day: "П'ятниця",
     items: [
-      { time: "9:15", text: "Реєстрація, конект, ді-джей" },
-      { time: "10:00", text: "Прославлення, відкриття (Білик)" },
+      { time: "9:15", text: "Реєстрація" },
+      { time: "10:00", text: "Відкриття" },
       { time: "11:30", text: "Перерва" },
-      { time: "12:00", text: "Сесія (Тобіас Тот)" },
+      { time: "12:00", text: "Сесія 1" },
       { time: "13:30", text: "Обід" },
-      { time: "14:30", text: "Норм чи стрьом (ток-шоу)" },
+      { time: "14:30", text: 'Ток шоу "норм чи стрьом"' },
       { time: "15:30", text: "Перерва" },
-      { time: "16:00", text: "Сесія (Ігор Н.), прославлення" },
+      { time: "16:00", text: "Сесія 2" },
       { time: "17:00", text: "Перерва" },
       { time: "17:30", text: "Вечір хвали" },
       { time: "18:30", text: "Чіл тайм" }
@@ -234,17 +233,16 @@ const SCHEDULE_DAYS = [
   {
     day: "Субота",
     items: [
-      { time: "8:30", text: "Сніданок для лідерів (сирники)" },
-      { time: "9:15", text: "Реєстрація, конект" },
-      { time: "10:00", text: "Сесія (Савчук М.)" },
+      { time: "9:15", text: "Реєстрація" },
+      { time: "10:00", text: "Сесія 1" },
       { time: "11:30", text: "Перерва" },
-      { time: "12:00", text: "Сесія (Тобіас Тот)" },
+      { time: "12:00", text: "Сесія 2" },
       { time: "13:30", text: "Обід" },
-      { time: "14:30", text: "Про стосунки (ток-шоу)" },
+      { time: "14:30", text: 'Ток шоу "про стосунки"' },
       { time: "15:30", text: "Перерва" },
-      { time: "16:00", text: "Сесія (Савчук М.)" },
+      { time: "16:00", text: "Сесія 3" },
       { time: "17:00", text: "Перерва" },
-      { time: "17:45", text: "Година з Богом, акустика «Я вирішив»" }
+      { time: "17:45", text: "Вечір хвали" }
     ]
   }
 ];
@@ -252,11 +250,11 @@ const SCHEDULE_DAYS = [
 const FAQ_ITEMS = [
   {
     q: "Коли і де?",
-    a: "Конференція Power Place відбудеться у Львові, за адресою Замарстинівська, 37. Точну дату та час уточнюйте у організаторів."
+    a: "24 квітня — старт дводенної конференції Power Place. Місце: Львів, вул. Замарстинівська, 37."
   },
   {
     q: "Скільки коштує участь?",
-    a: "Вартість залежить від формату участі. П’ятниця без обіду — 300 грн. Деталі при реєстрації."
+    a: "Вартість залежить від формату: П'ятниця, без обіду — 300 грн. Субота, без обіду — 300 грн. П'ятниця + Субота, без обідів — 500 грн. П'ятниця, з обідом — 800 грн. Субота, з обідом — 800 грн. П'ятниця + Субота, з обідами — 1100 грн."
   },
   {
     q: "Як зареєструватися?",
@@ -284,8 +282,12 @@ export default function ConferenceLanding() {
   const [palaiVisible, setPalaiVisible] = useState(false);
   const [flameExitDone, setFlameExitDone] = useState(true);
   const [headExitDone, setHeadExitDone] = useState(true);
-  const [starTapActive, setStarTapActive] = useState(false);
-  const [starHasTapped, setStarHasTapped] = useState(false);
+  const [headShowAfterDelay, setHeadShowAfterDelay] = useState(false);
+  const [starPosition, setStarPosition] = useState("left");
+  const [starClickCount, setStarClickCount] = useState(0);
+  const [starRolling, setStarRolling] = useState(false);
+  const [starRollDirection, setStarRollDirection] = useState(null);
+  const [starRotationOffset, setStarRotationOffset] = useState(0);
   const [faqOpen, setFaqOpen] = useState(null);
   const [activeSection, setActiveSection] = useState(NAV_SECTIONS[0].id);
   const [scheduleDayIndex, setScheduleDayIndex] = useState(0);
@@ -301,16 +303,14 @@ export default function ConferenceLanding() {
 
   const navScrollRef = useRef(null);
   const footerRef = useRef(null);
+  const birthDateInputRef = useRef(null);
   const pillRefs = useRef({});
   const isScrollingFromClick = useRef(false);
   const galleryScrollRef = useRef(null);
+  const galleryIdleSinceRef = useRef(0);
   const galleryDirectionRef = useRef(1);
-  const galleryIsUserInteractingRef = useRef(false);
-  const galleryLastInteractionRef = useRef(
-    typeof performance !== "undefined" ? performance.now() : Date.now()
-  );
   const galleryLastScrollLeftRef = useRef(0);
-  const galleryIsProgrammaticRef = useRef(false);
+  const galleryProgrammaticRef = useRef(false);
 
   // Scroll spy: підсвічувати кнопку секції, що в зоні видимості
   const observerCallback = useCallback((entries) => {
@@ -337,6 +337,91 @@ export default function ConferenceLanding() {
     return () => observer.disconnect();
   }, [observerCallback]);
 
+  // Галерея: початкова позиція (середина + випадковий зсув), безкінечний скрол
+  useEffect(() => {
+    const el = galleryScrollRef.current;
+    if (!el) return;
+    const init = () => {
+      const total = el.scrollWidth;
+      if (!total) return;
+      const third = total / 3;
+      const itemWidth = third / GALLERY_IMAGES.length;
+      const randomOffset = Math.floor(Math.random() * GALLERY_IMAGES.length) * itemWidth;
+      el.scrollLeft = third + randomOffset;
+      galleryLastScrollLeftRef.current = el.scrollLeft;
+    };
+    const id = requestAnimationFrame(init);
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  useEffect(() => {
+    const el = galleryScrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const total = el.scrollWidth;
+      if (!total) return;
+      const third = total / 3;
+      const x = el.scrollLeft;
+      if (x < third * 0.5) el.scrollLeft = x + third;
+      else if (x > third * 1.5) el.scrollLeft = x - third;
+      if (!galleryProgrammaticRef.current) {
+        const delta = x - galleryLastScrollLeftRef.current;
+        if (Math.abs(delta) > 0.5) galleryDirectionRef.current = delta > 0 ? 1 : -1;
+      } else {
+        galleryProgrammaticRef.current = false;
+      }
+      galleryLastScrollLeftRef.current = el.scrollLeft;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const el = galleryScrollRef.current;
+    if (!el) return;
+    const onTouch = () => { galleryIdleSinceRef.current = Infinity; };
+    const onRelease = () => { galleryIdleSinceRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now()); };
+    el.addEventListener("pointerdown", onTouch);
+    el.addEventListener("touchstart", onTouch);
+    el.addEventListener("pointerup", onRelease);
+    el.addEventListener("touchend", onRelease);
+    el.addEventListener("pointerleave", onRelease);
+    return () => {
+      el.removeEventListener("pointerdown", onTouch);
+      el.removeEventListener("touchstart", onTouch);
+      el.removeEventListener("pointerup", onRelease);
+      el.removeEventListener("touchend", onRelease);
+      el.removeEventListener("pointerleave", onRelease);
+    };
+  }, []);
+
+  useEffect(() => {
+    let rafId;
+    const IDLE_MS = 800;
+    const SPEED = 0.5;
+    const tick = () => {
+      const el = galleryScrollRef.current;
+      if (el) {
+        const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+        const idle = galleryIdleSinceRef.current !== Infinity && (now - galleryIdleSinceRef.current) > IDLE_MS;
+        if (idle) {
+          const total = el.scrollWidth;
+          if (total > 0) {
+            galleryProgrammaticRef.current = true;
+            el.scrollLeft += galleryDirectionRef.current * SPEED;
+            const third = total / 3;
+            const x = el.scrollLeft;
+            if (x < 0) el.scrollLeft = 0;
+            else if (x > total - el.clientWidth) el.scrollLeft = total - el.clientWidth;
+          }
+        }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => { if (rafId) cancelAnimationFrame(rafId); };
+  }, []);
+
   // Після кліку по пілу — прокрутити навбар так, щоб активний піл був видно
   useEffect(() => {
     const pillEl = pillRefs.current[activeSection];
@@ -349,127 +434,6 @@ export default function ConferenceLanding() {
       });
     }
   }, [activeSection]);
-
-  // Карусель фотогалереї: імітація безкінечної стрічки (3 копії ряду)
-  useEffect(() => {
-    const el = galleryScrollRef.current;
-    if (!el) return;
-
-    const initId = requestAnimationFrame(() => {
-      const totalWidth = el.scrollWidth;
-      if (!totalWidth) return;
-      const singleSetWidth = totalWidth / 3;
-      el.scrollLeft = singleSetWidth; // стартуємо з центральної копії
-      galleryLastScrollLeftRef.current = el.scrollLeft;
-    });
-
-    const handleScroll = () => {
-      if (!galleryScrollRef.current) return;
-
-      const totalWidth = el.scrollWidth;
-      if (!totalWidth) return;
-      const singleSetWidth = totalWidth / 3;
-      const current = el.scrollLeft;
-
-      const delta = current - galleryLastScrollLeftRef.current;
-      galleryLastScrollLeftRef.current = current;
-
-      const now =
-        typeof performance !== "undefined" ? performance.now() : Date.now();
-
-      // Якщо скрол ініційований користувачем — оновити напрямок і поставити паузу автопрокрутки
-      if (!galleryIsProgrammaticRef.current && Math.abs(delta) > 0.2) {
-        galleryDirectionRef.current = delta > 0 ? 1 : -1;
-        galleryIsUserInteractingRef.current = true;
-        galleryLastInteractionRef.current = now;
-      }
-
-      if (current < singleSetWidth * 0.5) {
-        // перескочити на таку ж позицію в наступній копії праворуч
-        el.scrollLeft = current + singleSetWidth;
-      } else if (current > singleSetWidth * 1.5) {
-        // перескочити в копію ліворуч
-        el.scrollLeft = current - singleSetWidth;
-      }
-    };
-
-    el.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      cancelAnimationFrame(initId);
-      el.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // Автопрокрутка фотокаруселі: повільний рух, який зупиняється при взаємодії
-  useEffect(() => {
-    const el = galleryScrollRef.current;
-    if (!el) return;
-
-    const handlePointerDown = () => {
-      galleryIsUserInteractingRef.current = true;
-      const now =
-        typeof performance !== "undefined" ? performance.now() : Date.now();
-      galleryLastInteractionRef.current = now;
-    };
-
-    const handlePointerUpOrLeave = () => {
-      const now =
-        typeof performance !== "undefined" ? performance.now() : Date.now();
-      galleryLastInteractionRef.current = now;
-      // Позначаємо, що після невеликої паузи можна знову автоскролити
-      galleryIsUserInteractingRef.current = false;
-    };
-
-    el.addEventListener("pointerdown", handlePointerDown);
-    el.addEventListener("pointerup", handlePointerUpOrLeave);
-    el.addEventListener("pointercancel", handlePointerUpOrLeave);
-    el.addEventListener("pointerleave", handlePointerUpOrLeave);
-
-    let frameId;
-    const tick = () => {
-      const node = galleryScrollRef.current;
-      if (node) {
-        const now =
-          typeof performance !== "undefined" ? performance.now() : Date.now();
-        const idle =
-          !galleryIsUserInteractingRef.current &&
-          now - galleryLastInteractionRef.current > 1000;
-
-        if (idle) {
-          const speed = 0.25; // пікселів за кадр — дуже повільно
-          const totalWidth = node.scrollWidth;
-          if (totalWidth > 0) {
-            const current = node.scrollLeft;
-
-            galleryIsProgrammaticRef.current = true;
-            node.scrollLeft =
-              current + galleryDirectionRef.current * speed;
-            galleryIsProgrammaticRef.current = false;
-
-            // Обробка стрибків для "безкінечності" делегується scroll-обробнику вище
-            if (node.scrollLeft < 0) {
-              node.scrollLeft = 0;
-            } else if (node.scrollLeft > totalWidth - node.clientWidth) {
-              node.scrollLeft = totalWidth - node.clientWidth;
-            }
-          }
-        }
-      }
-
-      frameId = requestAnimationFrame(tick);
-    };
-
-    frameId = requestAnimationFrame(tick);
-
-    return () => {
-      el.removeEventListener("pointerdown", handlePointerDown);
-      el.removeEventListener("pointerup", handlePointerUpOrLeave);
-      el.removeEventListener("pointercancel", handlePointerUpOrLeave);
-      el.removeEventListener("pointerleave", handlePointerUpOrLeave);
-      if (frameId) cancelAnimationFrame(frameId);
-    };
-  }, []);
 
   const handleNavClick = (id) => {
     isScrollingFromClick.current = true;
@@ -488,11 +452,11 @@ export default function ConferenceLanding() {
     const delays = [
       INTRO_DURATION_STAR,
       INTRO_DURATION_JESUS_IN,
-      INTRO_DURATION_POWER_PLACE,
+      Math.max(0, INTRO_DURATION_POWER_PLACE - 900),
       INTRO_DURATION_FLAME_IN,
       INTRO_DURATION_FLAME_OUT + INTRO_DURATION_PALAI,
-      INTRO_DURATION_HEAD_IN,
-      INTRO_DURATION_HEAD_OUT + INTRO_DURATION_ZROSTAI,
+      INTRO_DURATION_HEAD_VISIBLE,
+      INTRO_DURATION_HEAD_EXIT_MS,
       INTRO_DURATION_FINAL
     ];
     const t = setTimeout(
@@ -502,11 +466,11 @@ export default function ConferenceLanding() {
     return () => clearTimeout(t);
   }, [introDone, introStep]);
 
-  // Ісус зникає на 0,2 с раніше (за 200 ms до переходу на крок 3)
+  // Ісус зникає за 0,9 с до кінця кроку 2; перехід на крок 3 синхронізовано — без паузи
   useEffect(() => {
     if (introStep < 2) setJesusVisible(true);
     if (introStep === 2) {
-      const t = setTimeout(() => setJesusVisible(false), Math.max(0, INTRO_DURATION_POWER_PLACE - 200));
+      const t = setTimeout(() => setJesusVisible(false), Math.max(0, INTRO_DURATION_POWER_PLACE - 900));
       return () => clearTimeout(t);
     }
   }, [introStep]);
@@ -521,11 +485,11 @@ export default function ConferenceLanding() {
     if (introStep > 3) setPalaiVisible(true);
   }, [introStep]);
 
-  // «зростай» — у середині гіфки head (через половину часу показу head)
+  // «зростай» — у середині показу head (1,5 с)
   useEffect(() => {
     if (introStep < 5) setZrostaiVisible(false);
     if (introStep === 5) {
-      const t = setTimeout(() => setZrostaiVisible(true), INTRO_DURATION_HEAD_IN / 2);
+      const t = setTimeout(() => setZrostaiVisible(true), INTRO_DURATION_HEAD_VISIBLE / 2);
       return () => clearTimeout(t);
     }
     if (introStep > 5) setZrostaiVisible(true);
@@ -541,23 +505,27 @@ export default function ConferenceLanding() {
     if (introStep !== 3 && introStep !== 4) setFlameExitDone(true);
   }, [introStep]);
 
+  // Head: затримка 0.02 с після початку кроку 4 (перед появою паралельно з полум'ям)
+  useEffect(() => {
+    if (introStep < 4) setHeadShowAfterDelay(false);
+    if (introStep === 4) {
+      const t = setTimeout(() => setHeadShowAfterDelay(true), 20);
+      return () => clearTimeout(t);
+    }
+    if (introStep > 4) setHeadShowAfterDelay(true);
+  }, [introStep]);
+
   // Head: при переході на крок 6 ховається вниз (анімація 0.9s)
   useEffect(() => {
     if (introStep === 5) setHeadExitDone(false);
     if (introStep === 6) {
-      const t = setTimeout(() => setHeadExitDone(true), 900);
+      const t = setTimeout(() => setHeadExitDone(true), INTRO_DURATION_HEAD_EXIT_MS);
       return () => clearTimeout(t);
     }
     if (introStep !== 5 && introStep !== 6) setHeadExitDone(true);
   }, [introStep]);
 
   const toggleFaq = (i) => setFaqOpen((prev) => (prev === i ? null : i));
-
-  const loopedGalleryImages = [
-    ...GALLERY_IMAGES,
-    ...GALLERY_IMAGES,
-    ...GALLERY_IMAGES
-  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -600,25 +568,53 @@ export default function ConferenceLanding() {
       className="conference-page text-white overflow-x-hidden overflow-y-auto"
       style={grainStyle}
     >
-      {/* Одна зірка: поза оверлеєм, щоб не зникала разом із ним; інтерактивна */}
+      {/* Зірка: клік — обертання на місці; після 3+ кліків — перекочування в протилежний кут */}
       {introStep >= 0 && (
         <button
           type="button"
           aria-label="Зірка"
           onClick={() => {
-            if (introStep < 1 || starTapActive || starHasTapped) return;
-            setStarTapActive(true);
+            if (introStep < 1 || starRolling) return;
+            const pos = starPosition;
+            const count = starClickCount + 1;
+            setStarClickCount(count);
+            setStarRotationOffset((o) => o + 360);
             setTimeout(() => {
-              setStarTapActive(false);
-              setStarHasTapped(true);
+              if (count > 3) {
+                setStarRollDirection(pos === "left" ? "toRight" : "toLeft");
+                setStarRolling(true);
+              }
             }, 600);
           }}
-          className={`absolute top-0 right-0 w-80 h-80 object-contain z-[60] border-0 bg-transparent p-0 block transition-transform duration-200 ${
+          onAnimationEnd={(e) => {
+            if (e.animationName && (e.animationName.includes("star-roll") || e.animationName.includes("intro-star-roll"))) {
+              const dir = starRollDirection;
+              setStarPosition((p) => (p === "left" ? "right" : "left"));
+              setStarRolling(false);
+              setStarRollDirection(null);
+              setStarClickCount(0);
+              setStarRotationOffset((o) => o + (dir === "toRight" ? 900 : -900));
+            }
+          }}
+          className={`absolute top-0 right-0 w-80 h-80 object-contain z-[60] border-0 bg-transparent p-0 block cursor-pointer touch-manipulation ${
             introStep === 0 ? "intro-star-move pointer-events-none" : ""
-          } ${introStep >= 1 && !starTapActive ? (starHasTapped ? "intro-star-final-1080" : "intro-star-final") : ""} ${
-            starTapActive ? "conference-star-tap" : ""
-          } ${introStep >= 1 && !starTapActive ? "cursor-pointer touch-manipulation hover:scale-110" : ""}`}
-          style={{ maxWidth: "240px" }}
+          } ${introStep >= 1 && starRolling && starRollDirection === "toRight" ? "intro-star-roll-to-right" : ""} ${
+            introStep >= 1 && starRolling && starRollDirection === "toLeft" ? "intro-star-roll-to-left" : ""
+          } ${introStep >= 1 && !starRolling ? "conference-star-spin-transition" : ""}`}
+          style={{
+            maxWidth: "240px",
+            ...(introStep >= 1 && {
+              ...(starRolling && {
+                ["--star-roll-from"]: String(starPosition === "left" ? -900 + starRotationOffset : -1080 + starRotationOffset)
+              }),
+              ...(!starRolling && {
+                transform:
+                  starPosition === "left"
+                    ? `translate(calc(-100vw + 160px), -140px) rotate(${-900 + starRotationOffset}deg)`
+                    : `translate(140px, -140px) rotate(${-1080 + starRotationOffset}deg)`
+              })
+            })
+          }}
         >
           <img src={INTRO_ASSETS.star} alt="" className="w-full h-full object-contain pointer-events-none" />
         </button>
@@ -654,13 +650,13 @@ export default function ConferenceLanding() {
             </div>
           )}
 
-          {/* Крок 5–6: гіфка head — з'являється знизу, при зникненні ховається вниз */}
-          {(introStep === 5 || (introStep === 6 && !headExitDone)) && (
+          {/* Крок 4–6: гіфка head — з затримкою 0.02 с після початку кроку 4, потім ховається вниз */}
+          {((introStep === 4 && headShowAfterDelay) || introStep === 5 || (introStep === 6 && !headExitDone)) && (
             <div className="absolute bottom-0 left-0 right-0 w-full flex justify-center items-end pointer-events-none intro-head-wrap">
               <img
                 src={INTRO_ASSETS.head}
                 alt=""
-                className={`intro-head-img ${introStep === 6 ? "intro-slide-down" : "intro-slide-up-from-bottom"}`}
+                className={`intro-head-img ${introStep === 6 ? "intro-head-slide-down" : "intro-slide-up-from-bottom"}`}
               />
             </div>
           )}
@@ -721,24 +717,23 @@ export default function ConferenceLanding() {
               </h2>
             </div>
 
-            {/* Карусель круглих фото поверх слів */}
+            {/* Карусель: тягни вручну + повільна автопрокрутка, рандомний старт */}
             <div className="conference-gallery-layer">
               <div
                 ref={galleryScrollRef}
-                className="conference-gallery-carousel"
+                className="conference-gallery-track"
               >
-                {loopedGalleryImages.map((src, index) => (
-                  <div
-                    key={`${src}-${index}`}
-                    className="conference-gallery-item"
-                  >
-                    <img
-                      src={src}
-                      alt={`Power Place фото ${index + 1}`}
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
+                <div className="conference-gallery-inner">
+                  {[...GALLERY_IMAGES, ...GALLERY_IMAGES, ...GALLERY_IMAGES].map((src, index) => (
+                    <div key={`${src}-${index}`} className="conference-gallery-item">
+                      <img
+                        src={src}
+                        alt={`Power Place фото ${(index % GALLERY_IMAGES.length) + 1}`}
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -879,16 +874,28 @@ export default function ConferenceLanding() {
               <span className="conference-field-label">Дата народження</span>
               <div className="relative">
                 <input
-                  type="text"
-                  placeholder="25.12.2000"
+                  ref={birthDateInputRef}
+                  type="date"
                   aria-label="Дата народження"
-                  className="pr-10"
+                  className="conference-date-input pr-10"
+                  min="1900-01-01"
+                  max={(() => {
+                    const d = new Date();
+                    return d.toISOString().slice(0, 10);
+                  })()}
                   value={form.birthDate}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, birthDate: e.target.value }))
                   }
                 />
-                <Calendar className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
+                <button
+                  type="button"
+                  aria-label="Відкрити календар"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-full flex items-center justify-center text-white/50 hover:text-white/70 transition-colors pointer-events-auto"
+                  onClick={() => birthDateInputRef.current?.showPicker?.()}
+                >
+                  <Calendar className="w-5 h-5" />
+                </button>
               </div>
             </div>
             <div className="conference-field">
@@ -913,15 +920,21 @@ export default function ConferenceLanding() {
             </div>
             <div className="conference-field">
               <span className="conference-field-label">Роль у служінні</span>
-              <input
-                type="text"
-                placeholder="Помічник"
-                aria-label="Роль у служінні"
-                value={form.role}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, role: e.target.value }))
-                }
-              />
+              <div className="relative">
+                <select
+                  aria-label="Роль у служінні"
+                  value={form.role}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, role: e.target.value }))
+                  }
+                >
+                  <option value="">Обрати</option>
+                  <option value="Лідер">Лідер</option>
+                  <option value="Помічник">Помічник</option>
+                  <option value="Служитель">Служитель</option>
+                </select>
+                <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
+              </div>
             </div>
             <div className="conference-field">
               <span className="conference-field-label">Формат участі</span>
@@ -934,13 +947,12 @@ export default function ConferenceLanding() {
                   }
                 >
                   <option value="">Обрати</option>
-                  <option value="fri-no-lunch">
-                    П'ятниця (без обіду) — 300 грн
-                  </option>
-                  <option value="fri-lunch">
-                    П'ятниця (з обідом) — 400 грн
-                  </option>
-                  <option value="full">Повний формат — уточнюйте</option>
+                  <option value="fri-no">П'ятниця, без обіду — 300 грн</option>
+                  <option value="sat-no">Субота, без обіду — 300 грн</option>
+                  <option value="fri-sat-no">П'ятниця + Субота, без обідів — 500 грн</option>
+                  <option value="fri-lunch">П'ятниця, з обідом — 800 грн</option>
+                  <option value="sat-lunch">Субота, з обідом — 800 грн</option>
+                  <option value="fri-sat-lunch">П'ятниця + Субота, з обідами — 1100 грн</option>
                 </select>
                 <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
               </div>

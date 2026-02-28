@@ -71,8 +71,8 @@
 /* === Інтро конференції === */
 /* Зірка: старт право-верх, фініш — лівий верхній кут; докручується сильніше (3 оберти); 160px = половина w-80 */
 @keyframes intro-star-move {
-  from { transform: translate(50%, -50%) rotate(0deg); }
-  to { transform: translate(calc(-100vw + 160px), -160px) rotate(-1080deg); }
+  from { transform: translate(50%, calc(-50% + 20px)) rotate(0deg); }
+  to { transform: translate(calc(-100vw + 160px), -140px) rotate(-900deg); }
 }
 
 @keyframes intro-slide-up {
@@ -110,23 +110,31 @@
   animation: intro-star-move 1.1s ease-in-out forwards;
 }
 
-/* Фінальна позиція зірки після докруту — залишається назавжди */
+/* Фінальна позиція зірки після докруту — ліворуч, розвернута на 180° */
 .intro-star-final {
-  transform: translate(calc(-100vw + 160px), -160px) rotate(-1080deg);
+  transform: translate(calc(-100vw + 160px), -140px) rotate(-900deg);
 }
 
-/* Інтерактивна зірка: клік — додаткове обертання */
-@keyframes intro-star-tap-spin {
-  from { transform: translate(calc(-100vw + 160px), -160px) rotate(-1080deg); }
-  to { transform: translate(calc(-100vw + 160px), -160px) rotate(-1440deg); }
+/* Клік — плавне обертання на місці (через inline transform + transition) */
+.conference-star-spin-transition {
+  transition: transform 0.6s ease-out;
 }
 
-.conference-star-tap {
-  animation: intro-star-tap-spin 0.6s ease-out forwards;
+/* Після 3+ кліків — перекочування в протилежний кут (центр зірки в куті) з обертанням */
+@keyframes intro-star-roll-to-right {
+  from { transform: translate(calc(-100vw + 160px), -140px) rotate(calc(var(--star-roll-from, -900) * 1deg)); }
+  to { transform: translate(140px, -140px) rotate(calc((var(--star-roll-from, -900) + 720) * 1deg)); }
+}
+@keyframes intro-star-roll-to-left {
+  from { transform: translate(140px, -140px) rotate(calc(var(--star-roll-from, -1080) * 1deg)); }
+  to { transform: translate(calc(-100vw + 160px), -140px) rotate(calc((var(--star-roll-from, -1080) - 720) * 1deg)); }
 }
 
-.intro-star-final-1080 {
-  transform: translate(calc(-100vw + 160px), -160px) rotate(-1440deg);
+.intro-star-roll-to-right {
+  animation: intro-star-roll-to-right 1.2s ease-in-out forwards;
+}
+.intro-star-roll-to-left {
+  animation: intro-star-roll-to-left 1.2s ease-in-out forwards;
 }
 
 .intro-slide-up {
@@ -180,6 +188,11 @@
   object-fit: cover;
   object-position: center bottom;
   margin-left: -20%;
+}
+
+/* Вихід head на 0.06 с швидше (0.84s замість 0.9s) */
+.intro-head-slide-down {
+  animation: intro-slide-down 0.84s ease-out forwards;
 }
 
 .intro-fade-in {
