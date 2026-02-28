@@ -409,7 +409,6 @@ export default function ConferenceLanding() {
           if (total > 0) {
             galleryProgrammaticRef.current = true;
             el.scrollLeft += galleryDirectionRef.current * SPEED;
-            const third = total / 3;
             const x = el.scrollLeft;
             if (x < 0) el.scrollLeft = 0;
             else if (x > total - el.clientWidth) el.scrollLeft = total - el.clientWidth;
@@ -605,7 +604,7 @@ export default function ConferenceLanding() {
             maxWidth: "240px",
             ...(introStep >= 1 && {
               ...(starRolling && {
-                ["--star-roll-from"]: String(starPosition === "left" ? -900 + starRotationOffset : -1080 + starRotationOffset)
+                "--star-roll-from": String(starPosition === "left" ? -900 + starRotationOffset : -1080 + starRotationOffset)
               }),
               ...(!starRolling && {
                 transform:
