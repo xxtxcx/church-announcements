@@ -332,17 +332,13 @@ export default function ConferenceLanding() {
   });
 
   const navScrollRef = useRef(null);
-  const footerRef = useRef(null);
   const birthDateInputRef = useRef(null);
   const pillRefs = useRef({});
   const isScrollingFromClick = useRef(false);
   const galleryScrollRef = useRef(null);
-  const galleryIdleSinceRef = useRef(0);
-  const galleryDirectionRef = useRef(1);
-  const galleryLastScrollLeftRef = useRef(0);
+  const galleryIdleSinceRef = useRef(0); // Infinity = користувач взаємодіє, число = час останнього відпускання
   const galleryProgrammaticRef = useRef(false);
   const galleryReleaseTimeoutRef = useRef(null);
-  const galleryCanStartAfterRef = useRef(null); // автопрокрутка стартує через 2 с після закінчення інтро
 
   // Scroll spy: підсвічувати кнопку секції, що в зоні видимості
   const observerCallback = useCallback((entries) => {
@@ -369,23 +365,20 @@ export default function ConferenceLanding() {
     return () => observer.disconnect();
   }, [observerCallback]);
 
-  // Галерея: початкова позиція (середина + випадковий зсув), безкінечний скрол
+  // Галерея: початкова позиція — середина (одна третина), щоб був безкінечний скрол
   useEffect(() => {
     const el = galleryScrollRef.current;
     if (!el) return;
     const init = () => {
       const total = el.scrollWidth;
       if (!total) return;
-      const third = total / 3;
-      const itemWidth = third / GALLERY_IMAGES.length;
-      const randomOffset = Math.floor(Math.random() * GALLERY_IMAGES.length) * itemWidth;
-      el.scrollLeft = third + randomOffset;
-      galleryLastScrollLeftRef.current = el.scrollLeft;
+      el.scrollLeft = total / 3;
     };
     const id = requestAnimationFrame(init);
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // Галерея: безкінечний скрол — перестрибування між третинами
   useEffect(() => {
     const el = galleryScrollRef.current;
     if (!el) return;
@@ -396,37 +389,32 @@ export default function ConferenceLanding() {
       const x = el.scrollLeft;
       if (x < third * 0.5) el.scrollLeft = x + third;
       else if (x > third * 1.5) el.scrollLeft = x - third;
-      if (!galleryProgrammaticRef.current) {
-        const delta = x - galleryLastScrollLeftRef.current;
-        if (Math.abs(delta) > 0.5) galleryDirectionRef.current = delta > 0 ? 1 : -1;
-      } else {
-        galleryProgrammaticRef.current = false;
-      }
-      galleryLastScrollLeftRef.current = el.scrollLeft;
+      galleryProgrammaticRef.current = false;
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Галерея: на мобільних touchend/pointerup іноді не приходять на елемент (палець відпущено під час скролу сторінки), тому idle залишається Infinity — додаємо таймаут-відновлення
+  // Галерея: пауза при дотику, відновлення після відпускання (на мобільних — таймаут, якщо touchend не прийшов)
   useEffect(() => {
     const el = galleryScrollRef.current;
     if (!el) return;
-    const IDLE_RECOVER_MS = 2000;
+    const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+    const RECOVER_MS = 2000;
     const onTouch = () => {
       galleryIdleSinceRef.current = Infinity;
       if (galleryReleaseTimeoutRef.current) clearTimeout(galleryReleaseTimeoutRef.current);
       galleryReleaseTimeoutRef.current = setTimeout(() => {
         galleryReleaseTimeoutRef.current = null;
-        galleryIdleSinceRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now());
-      }, IDLE_RECOVER_MS);
+        galleryIdleSinceRef.current = now();
+      }, RECOVER_MS);
     };
     const onRelease = () => {
       if (galleryReleaseTimeoutRef.current) {
         clearTimeout(galleryReleaseTimeoutRef.current);
         galleryReleaseTimeoutRef.current = null;
       }
-      galleryIdleSinceRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now());
+      galleryIdleSinceRef.current = now();
     };
     el.addEventListener("pointerdown", onTouch);
     el.addEventListener("touchstart", onTouch);
@@ -445,12 +433,7 @@ export default function ConferenceLanding() {
     };
   }, []);
 
-  useEffect(() => {
-    if (introDone && galleryCanStartAfterRef.current === null) {
-      galleryCanStartAfterRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now()) + 2000;
-    }
-  }, [introDone]);
-
+  // Галерея: автоматичний рух вправо; якщо користувач не взаємодіє (idle) — рухаємо
   useEffect(() => {
     let rafId;
     const IDLE_MS = 800;
@@ -459,14 +442,13 @@ export default function ConferenceLanding() {
       const el = galleryScrollRef.current;
       if (el) {
         const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-        const canStart = galleryCanStartAfterRef.current !== null && now >= galleryCanStartAfterRef.current;
-        const idle = canStart && galleryIdleSinceRef.current !== Infinity && (now - galleryIdleSinceRef.current) > IDLE_MS;
+        const idle = galleryIdleSinceRef.current !== Infinity && (now - galleryIdleSinceRef.current) > IDLE_MS;
         if (idle) {
           const total = el.scrollWidth;
           if (total > 0) {
             const third = total / 3;
             galleryProgrammaticRef.current = true;
-            el.scrollLeft += galleryDirectionRef.current * SPEED;
+            el.scrollLeft += SPEED;
             let x = el.scrollLeft;
             if (third > 0) {
               if (x < third * 0.5) el.scrollLeft = x + third;
@@ -1087,7 +1069,6 @@ export default function ConferenceLanding() {
 
       {/* ========== КОНТАКТИ / FOOTER — svg-макет ========== */}
       <footer
-        ref={footerRef}
         id="contacts"
         className="w-full text-white overflow-hidden min-h-[425px] pb-[145px] sm:pb-[160px]"
         style={{ backgroundColor: FOOTER_BG }}
