@@ -608,10 +608,11 @@ export default function ConferenceLanding() {
   const showIntro = !introDone;
 
   return (
-    <div
-      className="conference-page text-white overflow-x-hidden overflow-y-auto"
-      style={grainStyle}
-    >
+    <div className="conference-page-wrap">
+      <div
+        className="conference-page text-white overflow-x-hidden overflow-y-auto"
+        style={grainStyle}
+      >
       {/* Зірка: клік — обертання на місці; після 3+ кліків — перекочування в протилежний кут */}
       {introStep >= 0 && (
         <button
@@ -1107,6 +1108,7 @@ export default function ConferenceLanding() {
           </div>
         </nav>
       )}
+      </div>
     </div>
   );
 }

@@ -1,10 +1,19 @@
 /* Conference page — стилі з Figma (Version-2, 390px) */
 
-/* Контейнер сторінки: flex column, gap між секціями */
+/* Обгортка: на десктопі контент по центру, з боків фон */
+.conference-page-wrap {
+  width: 100%;
+  min-height: 100vh;
+  background: #202020;
+  display: flex;
+  justify-content: center;
+}
+
+/* Контейнер сторінки: на телефонах — на всю ширину; на десктопі — обмежена ширина по центру */
 .conference-page {
   position: relative;
   width: 100%;
-  max-width: 100vw;
+  max-width: 100%;
   overflow-x: hidden;
   background: #202020;
   display: flex;
@@ -21,6 +30,13 @@
   .conference-page {
     min-height: 100svh;
     height: 100svh;
+  }
+}
+
+/* Тільки на десктопі (широкий екран) — обмежуємо ширину, щоб виглядало як телефон */
+@media (min-width: 768px) {
+  .conference-page {
+    max-width: 430px;
   }
 }
 
