@@ -623,7 +623,7 @@
   margin-bottom: 0.5rem;
   background: #7926ff;
   color: #fff;
-  border: none;
+  border: 2px solid #fff;
   border-radius: 9999px;
   font-family: "Namu", "NAMU", sans-serif;
   font-weight: 800;

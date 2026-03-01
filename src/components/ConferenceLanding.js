@@ -259,7 +259,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Як зареєструватися?",
-    a: "Заповніть форму вище та натисніть «Зареєструватись». Ми зв’яжемося з вами для підтвердження."
+    a: "Заповни форму вище та натисни «Зареєструватись». Ми зв’яжемося з тобою для підтвердження."
   },
   {
     q: "Як оплатити?",
@@ -274,13 +274,13 @@ const FAQ_ITEMS = [
         >
           Monobank (банка)
         </a>
-        . У коментарі до платежу обовʼязково вкажи ПІП, під яким зареєструвався/зареєструвалася — щоб ми могли ідентифікувати оплату.
+        . У коментарі до платежу обовʼязково вкажи ПІП, під яким зареєструвався/зареєструвалася - щоб ми могли ідентифікувати оплату.
       </>
     )
   },
   {
     q: "Я з іншого міста, де зупинитися?",
-    a: "Напишіть нам за номером або контактом нижче — підкажемо варіанти житла поблизу."
+    a: "Напиши нам за номером або контактом нижче - підкажемо варіанти житла поблизу."
   },
   {
     q: "Що взяти з собою?",
@@ -288,7 +288,19 @@ const FAQ_ITEMS = [
   },
   {
     q: "Залишились питання?",
-    a: "Телефонуйте: 097 093 48 63 або напишіть Марті Бугиль."
+    a: (
+      <>
+        Дзвони: 097 093 48 63 або напиши в Telegram -{" "}
+        <a
+          href="https://t.me/MartaBuhyl"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="conference-faq-link"
+        >
+          Марта Бугиль (@MartaBuhyl)
+        </a>
+      </>
+    )
   }
 ];
 
@@ -925,7 +937,7 @@ export default function ConferenceLanding() {
                     setForm((f) => ({ ...f, ministry: e.target.value }))
                   }
                 >
-                  <option value="">Обрати</option>
+                  <option value="">Обери</option>
                   <option value="worship">Прославлення</option>
                   <option value="kids">Діти</option>
                   <option value="youth">Молодь</option>
@@ -945,7 +957,7 @@ export default function ConferenceLanding() {
                     setForm((f) => ({ ...f, role: e.target.value }))
                   }
                 >
-                  <option value="">Обрати</option>
+                  <option value="">Обери</option>
                   <option value="Лідер">Лідер</option>
                   <option value="Помічник">Помічник</option>
                   <option value="Служитель">Служитель</option>
@@ -963,7 +975,7 @@ export default function ConferenceLanding() {
                     setForm((f) => ({ ...f, format: e.target.value }))
                   }
                 >
-                  <option value="">Обрати</option>
+                  <option value="">Обери</option>
                   <option value="fri-no">П'ятниця, без обіду - 300 грн</option>
                   <option value="sat-no">Субота, без обіду - 300 грн</option>
                   <option value="fri-sat-no">П'ятниця + Субота, без обідів - 500 грн</option>
@@ -1044,21 +1056,15 @@ export default function ConferenceLanding() {
       <footer
         ref={footerRef}
         id="contacts"
-        className="w-full text-white overflow-hidden min-h-[425px] pb-32"
+        className="w-full text-white overflow-hidden min-h-[425px] pb-[145px] sm:pb-[160px]"
         style={{ backgroundColor: FOOTER_BG }}
       >
-        <picture>
-          <source
-            srcSet="/assets/footer-conference2.svg"
-            media="(min-width: 640px)"
-          />
-          <img
-            src="/assets/footer-conference.svg"
-            alt="Power Place контакти"
-            className="w-full h-auto block"
-            loading="lazy"
-          />
-        </picture>
+        <img
+          src="/assets/footer-conference.png"
+          alt="Power Place контакти"
+          className="w-full h-auto block"
+          loading="lazy"
+        />
       </footer>
 
       {/* Нижній навбар — ховається біля футера; пілюля з обводкою */}
