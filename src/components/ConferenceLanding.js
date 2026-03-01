@@ -106,7 +106,6 @@ const INTRO_ASSETS = {
 
 // Фотогалерея — коло з фото поверх слів "Любов / Спільність / ..."
 const GALLERY_IMAGES = [
-  "/assets/d7b2a3ac465efa5671f2cbf107bcb1f44d72378e.jpg",
   "/assets/c42340f9bc284f06b323c6e1fc5a14977e313745.jpg",
   "/assets/92249a08ab01e73eb3addb5bf3e45ffff8662286.jpg",
   "/assets/355bfcc5018386977f9e6dc33341cf5d2f682255.jpg",
