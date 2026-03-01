@@ -342,6 +342,7 @@ export default function ConferenceLanding() {
   const galleryLastScrollLeftRef = useRef(0);
   const galleryProgrammaticRef = useRef(false);
   const galleryReleaseTimeoutRef = useRef(null);
+  const galleryCanStartAfterRef = useRef(null); // автопрокрутка стартує через 2 с після закінчення інтро
 
   // Scroll spy: підсвічувати кнопку секції, що в зоні видимості
   const observerCallback = useCallback((entries) => {
@@ -445,6 +446,12 @@ export default function ConferenceLanding() {
   }, []);
 
   useEffect(() => {
+    if (introDone && galleryCanStartAfterRef.current === null) {
+      galleryCanStartAfterRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now()) + 2000;
+    }
+  }, [introDone]);
+
+  useEffect(() => {
     let rafId;
     const IDLE_MS = 800;
     const SPEED = 0.5;
@@ -452,13 +459,20 @@ export default function ConferenceLanding() {
       const el = galleryScrollRef.current;
       if (el) {
         const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-        const idle = galleryIdleSinceRef.current !== Infinity && (now - galleryIdleSinceRef.current) > IDLE_MS;
+        const canStart = galleryCanStartAfterRef.current !== null && now >= galleryCanStartAfterRef.current;
+        const idle = canStart && galleryIdleSinceRef.current !== Infinity && (now - galleryIdleSinceRef.current) > IDLE_MS;
         if (idle) {
           const total = el.scrollWidth;
           if (total > 0) {
+            const third = total / 3;
             galleryProgrammaticRef.current = true;
             el.scrollLeft += galleryDirectionRef.current * SPEED;
-            const x = el.scrollLeft;
+            let x = el.scrollLeft;
+            if (third > 0) {
+              if (x < third * 0.5) el.scrollLeft = x + third;
+              else if (x > third * 1.5) el.scrollLeft = x - third;
+            }
+            x = el.scrollLeft;
             if (x < 0) el.scrollLeft = 0;
             else if (x > total - el.clientWidth) el.scrollLeft = total - el.clientWidth;
           }
