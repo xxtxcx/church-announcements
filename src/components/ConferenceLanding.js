@@ -341,6 +341,7 @@ export default function ConferenceLanding() {
   const galleryDirectionRef = useRef(1);
   const galleryLastScrollLeftRef = useRef(0);
   const galleryProgrammaticRef = useRef(false);
+  const galleryReleaseTimeoutRef = useRef(null);
 
   // Scroll spy: підсвічувати кнопку секції, що в зоні видимості
   const observerCallback = useCallback((entries) => {
@@ -406,22 +407,40 @@ export default function ConferenceLanding() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Галерея: на мобільних touchend/pointerup іноді не приходять на елемент (палець відпущено під час скролу сторінки), тому idle залишається Infinity — додаємо таймаут-відновлення
   useEffect(() => {
     const el = galleryScrollRef.current;
     if (!el) return;
-    const onTouch = () => { galleryIdleSinceRef.current = Infinity; };
-    const onRelease = () => { galleryIdleSinceRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now()); };
+    const IDLE_RECOVER_MS = 2000;
+    const onTouch = () => {
+      galleryIdleSinceRef.current = Infinity;
+      if (galleryReleaseTimeoutRef.current) clearTimeout(galleryReleaseTimeoutRef.current);
+      galleryReleaseTimeoutRef.current = setTimeout(() => {
+        galleryReleaseTimeoutRef.current = null;
+        galleryIdleSinceRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now());
+      }, IDLE_RECOVER_MS);
+    };
+    const onRelease = () => {
+      if (galleryReleaseTimeoutRef.current) {
+        clearTimeout(galleryReleaseTimeoutRef.current);
+        galleryReleaseTimeoutRef.current = null;
+      }
+      galleryIdleSinceRef.current = (typeof performance !== "undefined" ? performance.now() : Date.now());
+    };
     el.addEventListener("pointerdown", onTouch);
     el.addEventListener("touchstart", onTouch);
     el.addEventListener("pointerup", onRelease);
     el.addEventListener("touchend", onRelease);
     el.addEventListener("pointerleave", onRelease);
+    el.addEventListener("touchcancel", onRelease);
     return () => {
+      if (galleryReleaseTimeoutRef.current) clearTimeout(galleryReleaseTimeoutRef.current);
       el.removeEventListener("pointerdown", onTouch);
       el.removeEventListener("touchstart", onTouch);
       el.removeEventListener("pointerup", onRelease);
       el.removeEventListener("touchend", onRelease);
       el.removeEventListener("pointerleave", onRelease);
+      el.removeEventListener("touchcancel", onRelease);
     };
   }, []);
 
