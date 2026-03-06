@@ -10,6 +10,8 @@ const MONOBANK_JAR_URL = "https://send.monobank.ua/jar/9HKpA3Sjge";
 const GOOGLE_FORM = {
   formId: "1FAIpQLSciTF6E-ISRi9nhogllDbCHp7u51ZHIUAPDVlnvsT8_6i-kyw",
   entries: {
+    city: "entry.654956896",
+    church: "entry.1936945530",
     fullName: "entry.725838874",
     phone: "entry.1275835305",
     birthDate: "entry.1380077094", // у формі — тип «Коротка відповідь», не «Дата»
@@ -21,6 +23,7 @@ const GOOGLE_FORM = {
 
 const MINISTRY_LABELS = {
   "": "—",
+  none: "Не маю служіння",
   worship: "Прославлення",
   kids: "Діти",
   youth: "Молодь",
@@ -329,6 +332,8 @@ export default function ConferenceLanding() {
   const [scheduleDayIndex, setScheduleDayIndex] = useState(0);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [form, setForm] = useState({
+    city: "",
+    church: "",
     fullName: "",
     phone: "",
     birthDate: "",
@@ -618,11 +623,16 @@ export default function ConferenceLanding() {
     params.set(entries.fullName, form.fullName.trim());
     params.set(entries.phone, form.phone.trim());
     params.set(entries.birthDate, birthDateValue);
+    params.set(entries.city, form.city.trim());
+    params.set(entries.church, form.church.trim());
     params.set(
       entries.ministry,
       (MINISTRY_LABELS[form.ministry] ?? form.ministry).trim()
     );
-    params.set(entries.role, form.role.trim());
+    params.set(
+      entries.role,
+      form.ministry === "none" ? "—" : form.role.trim()
+    );
     params.set(
       entries.format,
       (FORMAT_LABELS[form.format] ?? form.format).trim()
@@ -1048,6 +1058,7 @@ export default function ConferenceLanding() {
                     }
                   >
                     <option value="">Обери</option>
+                    <option value="none">Не маю служіння</option>
                     <option value="worship">Прославлення</option>
                     <option value="kids">Діти</option>
                     <option value="youth">Молодь</option>
@@ -1065,24 +1076,26 @@ export default function ConferenceLanding() {
                   <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
                 </div>
               </div>
-              <div className="conference-field">
-                <span className="conference-field-label">Роль у служінні</span>
-                <div className="relative">
-                  <select
-                    aria-label="Роль у служінні"
-                    value={form.role}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, role: e.target.value }))
-                    }
-                  >
-                    <option value="">Обери</option>
-                    <option value="Лідер">Лідер</option>
-                    <option value="Помічник">Помічник</option>
-                    <option value="Служитель">Служитель</option>
-                  </select>
-                  <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
+              {form.ministry !== "none" && (
+                <div className="conference-field">
+                  <span className="conference-field-label">Роль у служінні</span>
+                  <div className="relative">
+                    <select
+                      aria-label="Роль у служінні"
+                      value={form.role}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, role: e.target.value }))
+                      }
+                    >
+                      <option value="">Обери</option>
+                      <option value="Лідер">Лідер</option>
+                      <option value="Помічник">Помічник</option>
+                      <option value="Служитель">Служитель</option>
+                    </select>
+                    <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="conference-field">
                 <span className="conference-field-label">Формат участі</span>
                 <div className="relative">
@@ -1102,6 +1115,34 @@ export default function ConferenceLanding() {
                     </option>
                   </select>
                   <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50 pointer-events-none" />
+                </div>
+              </div>
+              <div className="conference-field">
+                <span className="conference-field-label">Місто</span>
+                <div className="relative">
+                  <input
+                    aria-label="Місто"
+                    type="text"
+                    placeholder="Я з міста..."
+                    value={form.city}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, city: e.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="conference-field">
+                <span className="conference-field-label">Церква</span>
+                <div className="relative">
+                  <input
+                    aria-label="Церква"
+                    type="text"
+                    placeholder='Назва моєї церкви...'
+                    value={form.church}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, church: e.target.value }))
+                    }
+                  />
                 </div>
               </div>
               <div className="flex flex-col items-center gap-3 pt-1">
@@ -1157,14 +1198,17 @@ export default function ConferenceLanding() {
                   className="conference-success-close"
                   onClick={() => {
                     setFormSubmitted(false);
-                    setForm({
+                    setForm((prev) => ({
+                      ...prev,
+                      city: "",
+                      church: "",
                       fullName: "",
                       phone: "",
                       birthDate: "",
                       ministry: "",
                       role: "Помічник",
                       format: ""
-                    });
+                    }));
                   }}
                 >
                   ЗАКРИТИ
