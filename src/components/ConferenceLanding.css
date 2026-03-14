@@ -288,6 +288,14 @@
   border: 0;
 }
 
+/* Радіо «Потребую розселення» */
+.conference-radio {
+  accent-color: #7926FF;
+  width: 1.125rem;
+  height: 1.125rem;
+  cursor: pointer;
+}
+
 /* Кнопка форми "Зареєструватись" — NAMU 900, 20px, 24px, uppercase */
 .conference-form-btn-text {
   font-family: "Namu", "NAMU", sans-serif;

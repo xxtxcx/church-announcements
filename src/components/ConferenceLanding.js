@@ -10,6 +10,7 @@ const MONOBANK_JAR_URL = "https://send.monobank.ua/jar/9HKpA3Sjge";
 const GOOGLE_FORM = {
   formId: "1FAIpQLSciTF6E-ISRi9nhogllDbCHp7u51ZHIUAPDVlnvsT8_6i-kyw",
   entries: {
+    needAccommodation: "entry.194848931", // Потребую розселення (Так/Ні)
     city: "entry.654956896",
     church: "entry.1936945530",
     fullName: "entry.725838874",
@@ -339,7 +340,8 @@ export default function ConferenceLanding() {
     birthDate: "",
     ministry: "",
     role: "Помічник",
-    format: ""
+    format: "",
+    needAccommodation: ""
   });
 
   const navScrollRef = useRef(null);
@@ -620,6 +622,12 @@ export default function ConferenceLanding() {
     const params = new URLSearchParams();
     params.set("draftResponse", "[]");
     params.set("pageHistory", "0");
+    if (entries.needAccommodation) {
+      params.set(
+        entries.needAccommodation,
+        form.needAccommodation === "yes" ? "Так" : form.needAccommodation === "no" ? "Ні" : ""
+      );
+    }
     params.set(entries.fullName, form.fullName.trim());
     params.set(entries.phone, form.phone.trim());
     params.set(entries.birthDate, birthDateValue);
@@ -1145,6 +1153,37 @@ export default function ConferenceLanding() {
                   />
                 </div>
               </div>
+              <div className="conference-field">
+                <span className="conference-field-label">Потребую розселення</span>
+                <div className="flex gap-4 pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer text-white/90">
+                    <input
+                      type="radio"
+                      name="needAccommodation"
+                      value="yes"
+                      checked={form.needAccommodation === "yes"}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, needAccommodation: e.target.value }))
+                      }
+                      className="conference-radio"
+                    />
+                    <span>Так</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer text-white/90">
+                    <input
+                      type="radio"
+                      name="needAccommodation"
+                      value="no"
+                      checked={form.needAccommodation === "no"}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, needAccommodation: e.target.value }))
+                      }
+                      className="conference-radio"
+                    />
+                    <span>Ні</span>
+                  </label>
+                </div>
+              </div>
               <div className="flex flex-col items-center gap-3 pt-1">
                 <button
                   type="submit"
@@ -1207,7 +1246,8 @@ export default function ConferenceLanding() {
                       birthDate: "",
                       ministry: "",
                       role: "Помічник",
-                      format: ""
+                      format: "",
+                      needAccommodation: ""
                     }));
                   }}
                 >
